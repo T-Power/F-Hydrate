@@ -1,12 +1,7 @@
 class GeographicPosition {
 
-  double longitude;
-  
-  
-  double latitude;
+  double longitude = 0;
+  double latitude = 0;
 
-  GeographicPosition(){
-    longitude = 0;
-    latitude = 0;
-  }
+  
 }

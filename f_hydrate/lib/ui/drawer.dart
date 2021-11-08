@@ -1,3 +1,4 @@
+import 'package:f_hydrate/ui/forrestmap.dart';
 import 'package:f_hydrate/ui/not_implemented_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -42,8 +43,7 @@ class DrawerBuilder {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const NotImplementedWidget(
-                      key: Key('mapWidget'),
+                    builder: (context) => const ForrestMap(title: 'Karte',
                     ),
                   ),
                 );

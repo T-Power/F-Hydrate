@@ -21,4 +21,14 @@ class TreeInformation {
         "Latitude: " +
         position.latitude.toString();
   }
+
+static TreeInformation createExample(){
+  var tree = TreeInformation();
+  tree.name = "Baum 01";
+  tree.waterLevel = 75.02;
+  tree.type = "Fichte";
+  
+  return tree;
+}
+
 }

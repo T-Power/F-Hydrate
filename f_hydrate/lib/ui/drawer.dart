@@ -1,5 +1,6 @@
 import 'package:f_hydrate/ui/forestmap.dart';
 import 'package:f_hydrate/ui/not_implemented_widget.dart';
+import 'package:f_hydrate/ui/sensor_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
@@ -43,7 +44,8 @@ class DrawerBuilder {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const ForestMap(title: 'Karte',
+                    builder: (context) => const ForestMap(
+                      title: 'Karte',
                     ),
                   ),
                 );
@@ -84,7 +86,7 @@ class DrawerBuilder {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const NotImplementedWidget(
+                    builder: (context) => const SensorPage(
                       key: Key('moistureInformation'),
                     ),
                   ),

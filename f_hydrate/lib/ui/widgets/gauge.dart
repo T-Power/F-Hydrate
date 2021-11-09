@@ -7,23 +7,16 @@ import 'package:flutter/material.dart';
  * Example from https://rm3l.org/creating-a-mid-circle-radial-gauge-in-flutter/
  */
 class Gauge extends StatelessWidget {
-  const Gauge(
-      {Key? key,
-      required this.title,
-      this.maxValue = 100,
-      this.currentValue = 0})
-      : super(key: key);
+  const Gauge({Key? key, required this.unit}) : super(key: key);
 
-  final String title;
-  final double maxValue;
-  final double currentValue;
+  final dynamic unit;
 
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
     return CustomPaint(
-      foregroundPainter: _GaugePainter(context, currentValue, maxValue),
+      foregroundPainter: _GaugePainter(context, unit),
       child: Container(
         width: screenWidth * 0.35,
         padding: const EdgeInsets.only(top: 50),
@@ -37,7 +30,7 @@ class Gauge extends StatelessWidget {
               Text(
                 calculateValue(),
                 style: const TextStyle(
-                  fontSize: 45,
+                  fontSize: 40,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -45,11 +38,17 @@ class Gauge extends StatelessWidget {
                 height: 5,
               ),
               Text(
-                title,
+                unit.description,
                 style: const TextStyle(
                   fontWeight: FontWeight.bold,
                 ),
               ),
+              Text(
+                '${unit.unit}',
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
+              )
             ],
           ),
         ),
@@ -58,16 +57,15 @@ class Gauge extends StatelessWidget {
   }
 
   String calculateValue() {
-    return '${(100 * currentValue / maxValue).toStringAsFixed(1)}%';
+    return '${(unit.value * unit.multiplier).toStringAsFixed(1)} ${unit.unit}';
   }
 }
 
 class _GaugePainter extends CustomPainter {
-  final num maxValue;
-  final num current;
+  final dynamic unit;
   final BuildContext context;
 
-  _GaugePainter(this.context, this.current, this.maxValue);
+  _GaugePainter(this.context, this.unit);
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -91,18 +89,17 @@ class _GaugePainter extends CustomPainter {
     canvas.drawArc(Rect.fromCircle(center: center, radius: radius), startAngle,
         sweepAngle, false, line);
 
-    final arcAngle = (sweepAngle) * (current / maxValue);
+    final arcAngle = (sweepAngle) * (unit.value / unit.max);
     canvas.drawArc(Rect.fromCircle(center: center, radius: radius), startAngle,
         arcAngle, false, complete);
 
     final lowerBoundText = TextPainter(textDirection: TextDirection.ltr)
-      ..text = const TextSpan(text: '0')
+      ..text = TextSpan(text: '${(unit.min * unit.multiplier)}')
       ..layout(minWidth: 0, maxWidth: double.maxFinite);
-    lowerBoundText.paint(
-        canvas, Offset(-size.width * 0.42, size.height / 1));
+    lowerBoundText.paint(canvas, Offset(-size.width * 0.42, size.height / 1));
 
     final upperBoundText = TextPainter(textDirection: TextDirection.ltr)
-      ..text = TextSpan(text: '$maxValue')
+      ..text = TextSpan(text: '${(unit.max * unit.multiplier)}')
       ..layout(minWidth: 0, maxWidth: double.maxFinite);
     upperBoundText.paint(canvas, Offset(size.width / 0.77, size.height / 1));
   }

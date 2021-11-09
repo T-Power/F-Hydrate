@@ -80,14 +80,14 @@ class DrawerBuilder {
               },
             ),
             ListTile(
-              title: const Text('Feuchtigkeitszustand'),
+              title: const Text('Sensordaten'),
               leading: const Icon(Icons.speed),
               onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) => const SensorPage(
-                      key: Key('moistureInformation'),
+                      key: Key('sensorData'),
                     ),
                   ),
                 );

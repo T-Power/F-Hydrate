@@ -7,16 +7,18 @@ import 'package:flutter/material.dart';
  * Example from https://rm3l.org/creating-a-mid-circle-radial-gauge-in-flutter/
  */
 class Gauge extends StatelessWidget {
-  const Gauge({Key? key, required this.unit}) : super(key: key);
+  const Gauge({Key? key, required this.unit, this.targetValue = -1})
+      : super(key: key);
 
   final dynamic unit;
+  final num targetValue;
 
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
     return CustomPaint(
-      foregroundPainter: _GaugePainter(context, unit),
+      foregroundPainter: _GaugePainter(context, unit, targetValue: targetValue),
       child: Container(
         width: screenWidth * 0.35,
         padding: const EdgeInsets.only(top: 50),
@@ -43,12 +45,11 @@ class Gauge extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              Text(
-                '${unit.unit}',
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                ),
-              )
+              const SizedBox(
+                height: 10,
+              ),
+              const Text('Zielwert:'),
+              Text('${(targetValue * unit.multiplier).toStringAsFixed(1)} ${unit.unit}')
             ],
           ),
         ),
@@ -65,21 +66,30 @@ class _GaugePainter extends CustomPainter {
   final dynamic unit;
   final BuildContext context;
 
-  _GaugePainter(this.context, this.unit);
+  final num targetValue;
+
+  _GaugePainter(this.context, this.unit, {this.targetValue = -1});
 
   @override
   void paint(Canvas canvas, Size size) {
-    final complete = Paint()
+    final currentValueCircle = Paint()
       ..color = ThemeManager.currentTheme().colorScheme.secondary
       ..strokeCap = StrokeCap.round
       ..style = PaintingStyle.stroke
       ..strokeWidth = 13.0;
 
-    final line = Paint()
+    final background = Paint()
       ..color = ThemeManager.currentTheme().primaryColor
       ..strokeCap = StrokeCap.round
       ..style = PaintingStyle.stroke
       ..strokeWidth = 13.0;
+
+    final targetValueCircle = Paint()
+      ..color = Colors.lightGreen
+      ..strokeCap = StrokeCap.round
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 33.0;
+
     final center = Offset(size.width / 2, size.height / 2);
     final radius = min(size.width, size.height);
 
@@ -87,11 +97,24 @@ class _GaugePainter extends CustomPainter {
     final sweepAngle = 4 * pi / 3;
 
     canvas.drawArc(Rect.fromCircle(center: center, radius: radius), startAngle,
-        sweepAngle, false, line);
+        sweepAngle, false, background);
 
-    final arcAngle = (sweepAngle) * (unit.value / unit.max);
+    final value = unit.value;
+    final currentAngle = (sweepAngle) * calculatePercentage(value);
+    final targetAngle = (sweepAngle) * calculatePercentage(targetValue);
+
+    if (targetValue != -1) {
+      const targetMarkerRange = 0.1;
+      final lowerTargetAngle = targetAngle - targetMarkerRange;
+      canvas.drawArc(
+          Rect.fromCircle(center: center, radius: radius),
+          startAngle + lowerTargetAngle,
+          targetMarkerRange,
+          false,
+          targetValueCircle);
+    }
     canvas.drawArc(Rect.fromCircle(center: center, radius: radius), startAngle,
-        arcAngle, false, complete);
+        currentAngle, false, currentValueCircle);
 
     final lowerBoundText = TextPainter(textDirection: TextDirection.ltr)
       ..text = TextSpan(text: '${(unit.min * unit.multiplier)}')
@@ -106,4 +129,15 @@ class _GaugePainter extends CustomPainter {
 
   @override
   bool shouldRepaint(_GaugePainter oldDelegate) => false;
+
+  num calculateUnitRange() {
+    return unit.max - unit.min;
+  }
+
+  num calculatePercentage(value) {
+    num percentage =
+        (value + ((0 - unit.min) * (-1)) / calculateUnitRange()) / 100;
+    percentage *= unit.multiplier;
+    return percentage;
+  }
 }

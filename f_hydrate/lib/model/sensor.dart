@@ -1,3 +1,5 @@
+import 'package:f_hydrate/model/tree.dart';
+
 class Sensor {
   String id;
   String name;
@@ -9,18 +11,21 @@ class Sensor {
   ElectricalConductivity electricalConductivity;
   Salinity salinity;
   TotalDissolvedSolids totalDissolvedSolids;
+  Tree tree;
 
-  Sensor(
-      {this.id = '',
-      this.name = '',
-      this.unit = '',
-      this.latitude = 0,
-      this.longitude = 0,
-      this.temperature = const Temperature(0),
-      this.volumetricWaterContent = const VolumetricWaterContent(0),
-      this.electricalConductivity = const ElectricalConductivity(0),
-      this.salinity = const Salinity(0),
-      this.totalDissolvedSolids = const TotalDissolvedSolids(0)});
+  Sensor({
+    this.id = '',
+    this.name = '',
+    this.unit = '',
+    this.latitude = 0,
+    this.longitude = 0,
+    this.temperature = const Temperature(0),
+    this.volumetricWaterContent = const VolumetricWaterContent(0),
+    this.electricalConductivity = const ElectricalConductivity(0),
+    this.salinity = const Salinity(0),
+    this.totalDissolvedSolids = const TotalDissolvedSolids(0),
+    this.tree = const Tree(),
+  });
 }
 
 class Temperature {

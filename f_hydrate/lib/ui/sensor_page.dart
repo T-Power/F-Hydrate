@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:f_hydrate/model/sensor.dart';
+import 'package:f_hydrate/model/tree.dart';
 import 'package:f_hydrate/ui/drawer.dart';
 import 'package:f_hydrate/ui/widgets/gauge.dart';
 import 'package:flutter/material.dart';
@@ -32,6 +33,8 @@ class _SensorPageState extends State<SensorPage> {
           children: [
             Gauge(
               unit: unit,
+              targetValue:
+                  Random().nextInt(8000),
             ),
           ],
         ),
@@ -41,13 +44,13 @@ class _SensorPageState extends State<SensorPage> {
 
   Sensor randomSensor() {
     return Sensor(
-      name: 'FH DO FB4',
-      temperature: Temperature(Random().nextInt(8000)),
-      volumetricWaterContent: VolumetricWaterContent(Random().nextInt(10000)),
-      electricalConductivity: ElectricalConductivity(Random().nextInt(20000)),
-      salinity: Salinity(Random().nextInt(20000)),
-      totalDissolvedSolids: TotalDissolvedSolids(Random().nextInt(20000)),
-    );
+        name: 'FH DO FB4',
+        temperature: Temperature(Random().nextInt(8000)),
+        volumetricWaterContent: VolumetricWaterContent(Random().nextInt(10000)),
+        electricalConductivity: ElectricalConductivity(Random().nextInt(20000)),
+        salinity: Salinity(Random().nextInt(20000)),
+        totalDissolvedSolids: TotalDissolvedSolids(Random().nextInt(20000)),
+        tree: const Tree(targetVolumetricWaterContent: VolumetricWaterContent(2500)));
   }
 
   dynamic randomUnit(Sensor sensor) {

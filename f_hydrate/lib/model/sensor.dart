@@ -82,3 +82,11 @@ class TotalDissolvedSolids {
 
   const TotalDissolvedSolids(this.value);
 }
+
+class DynamicUnit{
+  final num min;
+  final num max;
+  final num multiplier;
+
+  DynamicUnit(this.min, this.max, this.multiplier);
+}

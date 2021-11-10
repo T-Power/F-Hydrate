@@ -49,7 +49,8 @@ class Gauge extends StatelessWidget {
                 height: 10,
               ),
               const Text('Zielwert:'),
-              Text('${(targetValue * unit.multiplier).toStringAsFixed(1)} ${unit.unit}')
+              Text(
+                  '${(targetValue * unit.multiplier).toStringAsFixed(1)} ${unit.unit}')
             ],
           ),
         ),
@@ -100,8 +101,10 @@ class _GaugePainter extends CustomPainter {
         sweepAngle, false, background);
 
     final value = unit.value;
-    final currentAngle = (sweepAngle) * calculatePercentage(value);
-    final targetAngle = (sweepAngle) * calculatePercentage(targetValue);
+    final currentAngle =
+        (sweepAngle) * GaugeCalculator.calculatePercentage(unit, value);
+    final targetAngle =
+        (sweepAngle) * GaugeCalculator.calculatePercentage(unit, targetValue);
 
     if (targetValue != -1) {
       const targetMarkerRange = 0.1;
@@ -129,15 +132,17 @@ class _GaugePainter extends CustomPainter {
 
   @override
   bool shouldRepaint(_GaugePainter oldDelegate) => false;
+}
 
-  num calculateUnitRange() {
+class GaugeCalculator {
+  static num calculateUnitRange(dynamic unit) {
     return unit.max - unit.min;
   }
 
-  num calculatePercentage(value) {
-    num percentage =
-        (value + ((0 - unit.min) * (-1)) / calculateUnitRange()) / 100;
-    percentage *= unit.multiplier;
+  static num calculatePercentage(dynamic unit, value) {
+    num denominator = (value + ((0 - unit.min)));
+    num counter = calculateUnitRange(unit);
+    num percentage = denominator / counter;
     return percentage;
   }
 }

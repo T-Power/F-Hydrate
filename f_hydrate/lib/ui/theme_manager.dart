@@ -14,7 +14,7 @@ class ThemeManager {
     0xffa2a2a2,
   );
 
-  static const Color primaryColorDark = Colors.white;
+  static final Color primaryColorDark = Colors.grey.shade300;
 
   static const Color accentColorDark = Color(
     0xffAB3B00,

@@ -1,6 +1,7 @@
 import 'package:f_hydrate/ui/forestmap.dart';
 import 'package:f_hydrate/ui/not_implemented_widget.dart';
 import 'package:f_hydrate/ui/tree_information_widget.dart';
+import 'package:f_hydrate/ui/sensor_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
@@ -44,7 +45,8 @@ class DrawerBuilder {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const ForestMap(title: 'Karte',
+                    builder: (context) => const ForestMap(
+                      title: 'Karte',
                     ),
                   ),
                 );
@@ -71,21 +73,21 @@ class DrawerBuilder {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const TreeInformationWidget(title: "Bauminformationen"),
-                    
+                    builder: (context) =>
+                        const TreeInformationWidget(title: "Bauminformationen"),
                   ),
                 );
               },
             ),
             ListTile(
-              title: const Text('Feuchtigkeitszustand'),
+              title: const Text('Sensordaten'),
               leading: const Icon(Icons.speed),
               onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const NotImplementedWidget(
-                      key: Key('moistureInformation'),
+                    builder: (context) => const SensorPage(
+                      key: Key('sensorData'),
                     ),
                   ),
                 );

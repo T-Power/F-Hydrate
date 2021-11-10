@@ -3,7 +3,7 @@
     <!-- Notwendig für flutter_map -->
     <uses-permission android:name="android.permission.INTERNET"/>
    <application
-        android:label="f_hydrate"
+        android:label="FHydrate"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

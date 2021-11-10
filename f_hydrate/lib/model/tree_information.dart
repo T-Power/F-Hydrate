@@ -10,15 +10,15 @@ class TreeInformation {
   String printText() {
     return "Name: " +
         name +
-        "Type: " +
+        "\nType: " +
         type +
-        "Birthday: " +
+        "\nBirthday: " +
         birthday.toString() +
-        "Water Level: " +
+        "\nWater Level: " +
         waterLevel.toString() +
-        "Longitude: " +
+        "\nLongitude: " +
         position.longitude.toString() +
-        "Latitude: " +
+        "\nLatitude: " +
         position.latitude.toString();
   }
 

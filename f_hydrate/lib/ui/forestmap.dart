@@ -1,3 +1,4 @@
+import 'package:f_hydrate/ui/tree_information_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -52,12 +53,11 @@ class _ForestMapState extends State<ForestMap> {
                     size: 30.0,
                   ),
                   onPressed: () => showDialog<String>(
-                    context: context,
-                    builder: (BuildContext context) =>
-                        const NotImplementedWidget(
-                      key: Key('treeAlertDialog'),
-                    ),
-                  ),
+                      context: context,
+                      builder: (BuildContext context) {
+                        return const AlertDialog(
+                            content: TreeInformationWidget(title: "Testtitel"));
+                      }),
                 ),
               ),
             ],

@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:math';
 
 import 'package:f_hydrate/ui/theme_manager.dart';
@@ -105,7 +106,12 @@ class _GaugePainter extends CustomPainter {
       ..strokeWidth = 33.0;
 
     final centerOfScreen = Offset(size.width / 2, size.height / 1.6);
-    final radius = min(size.width, size.height) * 0.60;
+    double radius = min(size.width, size.height);
+    if (Platform.isIOS || Platform.isAndroid) {
+      radius *= 0.45;
+    } else {
+      radius *= 0.6;
+    }
 
     const startAngle = -7 * pi / 6;
     const sweepAngle = 4 * pi / 3;

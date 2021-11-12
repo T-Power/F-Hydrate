@@ -19,19 +19,11 @@ class TreeInformationWidget extends StatefulWidget {
 class TreeInformationWidgetState extends State<TreeInformationWidget> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        drawer: DrawerBuilder.build(context),
-        appBar: AppBar(
-          // Here we take the value from the MyHomePage object that was created by
-          // the App.build method, and use it to set our appbar title.
-          title: Text(widget.title),
-        ),
-        body: SizedBox(
+    return SizedBox(
           width: 300,
           height: 400,
-          child: Card(
-            child: Padding(
-              padding: const EdgeInsets.all(20.0),
+          child: Padding(
+              padding: const EdgeInsets.all(10.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -95,8 +87,7 @@ class TreeInformationWidgetState extends State<TreeInformationWidget> {
                 ],
               ),
             ),
-          ),
-        ));
+          );
   }
 }
 

@@ -17,45 +17,57 @@ class Gauge extends StatelessWidget {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
-    return CustomPaint(
-      foregroundPainter: _GaugePainter(context, unit, targetValue: targetValue),
-      child: Container(
-        width: screenWidth * 0.35,
-        padding: const EdgeInsets.only(top: 50),
+    print('Width: $screenWidth Height: $screenHeight');
+    return SizedBox(child: LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints constraints) {
+      return CustomPaint(
+        foregroundPainter:
+            _GaugePainter(context, unit, targetValue: targetValue),
+        size: Size(constraints.maxWidth, constraints.maxHeight),
         child: Center(
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Container(
-                height: 20,
+              SizedBox(
+                height: screenHeight * 0.2,
               ),
               Text(
                 calculateValue(),
-                style: const TextStyle(
-                  fontSize: 40,
+                style: TextStyle(
+                  fontSize: 8 + min((screenWidth / 40), 52),
                   fontWeight: FontWeight.bold,
                 ),
+                maxLines: 3,
               ),
-              Container(
-                height: 5,
+              SizedBox(
+                height: screenHeight * 0.04,
               ),
               Text(
                 unit.description,
-                style: const TextStyle(
+                style: TextStyle(
                   fontWeight: FontWeight.bold,
+                  fontSize: 6 + min((screenWidth / 40), 29),
                 ),
               ),
-              const SizedBox(
-                height: 10,
+              SizedBox(
+                height: screenHeight * 0.04,
               ),
-              const Text('Zielwert:'),
               Text(
-                  '${(targetValue * unit.multiplier).toStringAsFixed(1)} ${unit.unit}')
+                'Zielwert:',
+                style: TextStyle(
+                  fontSize: 6 + min((screenWidth / 40), 29),
+                ),
+              ),
+              Text(
+                '${(targetValue * unit.multiplier).toStringAsFixed(1)} ${unit.unit}',
+                style: TextStyle(
+                  fontSize: 6 + min((screenWidth / 40), 29),
+                ),
+              )
             ],
           ),
         ),
-      ),
-    );
+      );
+    }));
   }
 
   String calculateValue() {
@@ -73,6 +85,7 @@ class _GaugePainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
+    print('GaugePainter.paint(). Width: ${size.width} Height: ${size.height}');
     final currentValueCircle = Paint()
       ..color = ThemeManager.currentTheme().colorScheme.secondary
       ..strokeCap = StrokeCap.round
@@ -91,14 +104,14 @@ class _GaugePainter extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeWidth = 33.0;
 
-    final center = Offset(size.width / 2, size.height / 2);
-    final radius = min(size.width, size.height);
+    final centerOfScreen = Offset(size.width / 2, size.height / 1.6);
+    final radius = min(size.width, size.height) * 0.60;
 
-    final startAngle = -7 * pi / 6;
-    final sweepAngle = 4 * pi / 3;
+    const startAngle = -7 * pi / 6;
+    const sweepAngle = 4 * pi / 3;
 
-    canvas.drawArc(Rect.fromCircle(center: center, radius: radius), startAngle,
-        sweepAngle, false, background);
+    canvas.drawArc(Rect.fromCircle(center: centerOfScreen, radius: radius),
+        startAngle, sweepAngle, false, background);
 
     final value = unit.value;
     final currentAngle =
@@ -110,24 +123,34 @@ class _GaugePainter extends CustomPainter {
       const targetMarkerRange = 0.1;
       final lowerTargetAngle = targetAngle - targetMarkerRange;
       canvas.drawArc(
-          Rect.fromCircle(center: center, radius: radius),
+          Rect.fromCircle(center: centerOfScreen, radius: radius),
           startAngle + lowerTargetAngle,
           targetMarkerRange,
           false,
           targetValueCircle);
     }
-    canvas.drawArc(Rect.fromCircle(center: center, radius: radius), startAngle,
-        currentAngle, false, currentValueCircle);
+    canvas.drawArc(Rect.fromCircle(center: centerOfScreen, radius: radius),
+        startAngle, currentAngle, false, currentValueCircle);
 
     final lowerBoundText = TextPainter(textDirection: TextDirection.ltr)
-      ..text = TextSpan(text: '${(unit.min * unit.multiplier)}')
-      ..layout(minWidth: 0, maxWidth: double.maxFinite);
-    lowerBoundText.paint(canvas, Offset(-size.width * 0.42, size.height / 1));
+      ..text = TextSpan(
+          text: '${(unit.min * unit.multiplier)}',
+          style: TextStyle(
+              color: Theme.of(context).textTheme.headline2!.color,
+              fontSize: 12 + min((size.width / 40), 30),
+              fontWeight: FontWeight.bold))
+      ..layout(minWidth: 0, maxWidth: size.width * 0.25);
+    lowerBoundText.paint(canvas, Offset(size.width * 0.28, size.height * 0.9));
 
     final upperBoundText = TextPainter(textDirection: TextDirection.ltr)
-      ..text = TextSpan(text: '${(unit.max * unit.multiplier)}')
-      ..layout(minWidth: 0, maxWidth: double.maxFinite);
-    upperBoundText.paint(canvas, Offset(size.width / 0.77, size.height / 1));
+      ..text = TextSpan(
+          text: '${(unit.max * unit.multiplier)}',
+          style: TextStyle(
+              color: Theme.of(context).textTheme.headline2!.color,
+              fontSize: 12 + min((size.width / 40), 30),
+              fontWeight: FontWeight.bold))
+      ..layout(minWidth: 0, maxWidth: size.width * 0.25);
+    upperBoundText.paint(canvas, Offset(size.width * 0.70, size.height * 0.9));
   }
 
   @override

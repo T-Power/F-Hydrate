@@ -15,29 +15,58 @@ class SensorPage extends StatefulWidget {
   _SensorPageState createState() => _SensorPageState();
 }
 
-class _SensorPageState extends State<SensorPage> {
+class _SensorPageState extends State<SensorPage> with TickerProviderStateMixin {
+  TabController? controller;
+
+  List<Widget> tabs = [];
+  Sensor? sensor;
+
+  @override
+  void initState() {
+    super.initState();
+    sensor = widget.sensor ?? randomSensor();
+    tabs = buildTabs(sensor!);
+    controller = TabController(length: tabs.length, vsync: this);
+  }
+
   @override
   Widget build(BuildContext context) {
-    Sensor sensor = widget.sensor ?? randomSensor();
-    dynamic unit = randomUnit(sensor);
     return Scaffold(
       drawer: DrawerBuilder.build(context),
       appBar: AppBar(
-        title: Text('${sensor.name} ${unit.description}'),
-      ),
-      body: SizedBox(
-        width: MediaQuery.of(context).size.width,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Gauge(
-              unit: unit,
-              targetValue:
-                  Random().nextInt(8000),
-            ),
+        title: Text(sensor!.name),
+        bottom: TabBar(
+          indicatorColor: Theme.of(context).colorScheme.secondary,
+          labelColor: Theme.of(context).colorScheme.secondary,
+          unselectedLabelColor: Theme.of(context).textTheme.headline1!.color,
+          tabs: const [
+            Icon(Icons.local_drink),
+            Icon(Icons.thermostat),
+            Icon(Icons.bolt),
+            Icon(Icons.local_florist),
+            Icon(Icons.science),
           ],
+          controller: controller!,
         ),
+      ),
+      body: Column(
+        children: [
+          SizedBox(
+            height: MediaQuery.of(context).size.height * 0.1,
+          ),
+          Expanded(
+            child: TabBarView(
+              children: tabs,
+              controller: controller!,
+            ),
+          ),
+          SizedBox(
+            height: MediaQuery.of(context).size.height * 0.1,
+          ),
+          TabPageSelector(
+            controller: controller!,
+          ),
+        ],
       ),
     );
   }
@@ -50,7 +79,8 @@ class _SensorPageState extends State<SensorPage> {
         electricalConductivity: ElectricalConductivity(Random().nextInt(20000)),
         salinity: Salinity(Random().nextInt(20000)),
         totalDissolvedSolids: TotalDissolvedSolids(Random().nextInt(20000)),
-        tree: const Tree(targetVolumetricWaterContent: VolumetricWaterContent(2500)));
+        tree: const Tree(
+            targetVolumetricWaterContent: VolumetricWaterContent(2500)));
   }
 
   dynamic randomUnit(Sensor sensor) {
@@ -69,5 +99,32 @@ class _SensorPageState extends State<SensorPage> {
       default:
         return sensor.volumetricWaterContent;
     }
+  }
+
+  List<Widget> buildTabs(Sensor sensor) {
+    return [
+      Gauge(
+        unit: sensor.volumetricWaterContent,
+        targetValue:
+            Random().nextInt(sensor.volumetricWaterContent.max.toInt()),
+      ),
+      Gauge(
+        unit: sensor.temperature,
+        targetValue: Random().nextInt(sensor.temperature.max.toInt()),
+      ),
+      Gauge(
+        unit: sensor.electricalConductivity,
+        targetValue:
+            Random().nextInt(sensor.electricalConductivity.max.toInt()),
+      ),
+      Gauge(
+        unit: sensor.salinity,
+        targetValue: Random().nextInt(sensor.salinity.max.toInt()),
+      ),
+      Gauge(
+        unit: sensor.totalDissolvedSolids,
+        targetValue: Random().nextInt(sensor.totalDissolvedSolids.max.toInt()),
+      ),
+    ];
   }
 }

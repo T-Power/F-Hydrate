@@ -18,20 +18,46 @@ class ForestMap extends StatefulWidget {
 }
 
 class _ForestMapState extends State<ForestMap> {
+  bool controllerReady = false;
+  double zoom = 13.0;
+
+  /* TODO Hier müssen wir gucken welcher initiale Mittelpunkt Sinn ergibt */
+  LatLng initialCenter = LatLng(51.494111843297155, 7.422219578674077);
+  MapController mapController = MapController();
+
+  @override
+  void initState() {
+    super.initState();
+    mapController.onReady.then((_) => controllerReady = true);
+  }
+
+  void _zoom(double value) {
+    if (controllerReady) {
+      double newValue = mapController.zoom + value;
+      if (newValue > 1 && newValue < 19) {
+        mapController.move(mapController.center, newValue);
+      }
+    }
+  }
+
+  void _center() {
+    if (controllerReady) {
+      mapController.move(initialCenter, mapController.zoom);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: DrawerBuilder.build(context),
       appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
       ),
       body: FlutterMap(
+        mapController: mapController,
         options: MapOptions(
-          /* TODO Hier müssen wir gucken welcher Mittelpunkt Sinn ergibt */
-          center: LatLng(51.494111843297155, 7.422219578674077),
-          zoom: 13.0,
+          center: initialCenter,
+          zoom: zoom,
         ),
         layers: [
           TileLayerOptions(
@@ -61,6 +87,39 @@ class _ForestMapState extends State<ForestMap> {
                 ),
               ),
             ],
+          ),
+        ],
+      ),
+      floatingActionButton: Row(
+        // https://www.youtube.com/watch?v=nvAh3ENt2Kk&t=98s
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: <Widget>[
+          FloatingActionButton(
+            heroTag: "btnCenter",
+            onPressed: () => _center(),
+            child: const Icon(
+              Icons.center_focus_strong,
+            ),
+          ),
+          const SizedBox(
+            width: 10,
+          ),
+          FloatingActionButton(
+            heroTag: "btnZoomOut",
+            onPressed: () => _zoom(-1),
+            child: const Icon(
+              Icons.zoom_out,
+            ),
+          ),
+          const SizedBox(
+            width: 10,
+          ),
+          FloatingActionButton(
+            heroTag: "btnZoomIn",
+            onPressed: () => _zoom(1),
+            child: const Icon(
+              Icons.zoom_in,
+            ),
           ),
         ],
       ),

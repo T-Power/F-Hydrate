@@ -36,9 +36,9 @@ class _ForestMapState extends State<ForestMap> {
   void _zoom(double value) {
     if (controllerReady) {
       double newValue = mapController.zoom + value;
-      if (newValue > 1 && newValue < 19) {
-        mapController.move(mapController.center, newValue);
-      }
+      //if (newValue >= 2 && newValue <= 18) {
+      mapController.move(mapController.center, newValue);
+      //}
     }
   }
 
@@ -103,6 +103,8 @@ class _ForestMapState extends State<ForestMap> {
           },
           center: center,
           zoom: zoom,
+          maxZoom: 18,
+          minZoom: 2,
           interactiveFlags: InteractiveFlag.pinchZoom | InteractiveFlag.drag,
         ),
         layers: [

@@ -2,6 +2,9 @@
     package="de.fhdortmund.fhydrate.f_hydrate">
     <!-- Notwendig für flutter_map -->
     <uses-permission android:name="android.permission.INTERNET"/>
+    <!-- Notwendig für geolocator -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
    <application
         android:label="f_hydrate"
         android:icon="@mipmap/ic_launcher">

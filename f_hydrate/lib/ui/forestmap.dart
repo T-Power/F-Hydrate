@@ -5,7 +5,6 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 
 import 'drawer.dart';
-import 'not_implemented_widget.dart';
 
 /* https://pub.dev/packages/flutter_map -> Dokumentation zu flutter_map */
 class ForestMap extends StatefulWidget {
@@ -20,6 +19,7 @@ class ForestMap extends StatefulWidget {
 class _ForestMapState extends State<ForestMap> {
   bool controllerReady = false;
   double zoom = 13.0;
+  bool treeInfoVisible = false;
 
   /* TODO Hier müssen wir gucken welcher initiale Mittelpunkt Sinn ergibt */
   LatLng initialCenter = LatLng(51.494111843297155, 7.422219578674077);
@@ -53,41 +53,68 @@ class _ForestMapState extends State<ForestMap> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: FlutterMap(
-        mapController: mapController,
-        options: MapOptions(
-          center: initialCenter,
-          zoom: zoom,
-        ),
-        layers: [
-          TileLayerOptions(
-            urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-            subdomains: ['a', 'b', 'c'],
-            attributionBuilder: (_) {
-              return const Text("© OpenStreetMap contributors");
-            },
-          ),
-          MarkerLayerOptions(
-            markers: [
-              /* TODO Hier brauchen wir vermutlich sowas wie einen FutureBuilder um alle Bäume,
+      body: Stack(
+        children: [
+          FlutterMap(
+            mapController: mapController,
+            options: MapOptions(
+              center: initialCenter,
+              zoom: zoom,
+            ),
+            layers: [
+              TileLayerOptions(
+                urlTemplate:
+                    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                subdomains: ['a', 'b', 'c'],
+                attributionBuilder: (_) {
+                  return const Text("© OpenStreetMap contributors");
+                },
+              ),
+              MarkerLayerOptions(
+                markers: [
+                  /* TODO Hier brauchen wir vermutlich sowas wie einen FutureBuilder um alle Bäume,
                   die wir vom Backend bekommen, anzuzeigen */
-              Marker(
-                point: LatLng(51.494111843297155, 7.422219578674077),
-                builder: (ctx) => IconButton(
-                  icon: const Icon(
-                    Icons.location_on,
-                    size: 30.0,
+                  Marker(
+                    point: LatLng(51.494111843297155, 7.422219578674077),
+                    builder: (ctx) => IconButton(
+                        icon: const Icon(
+                          Icons.location_on,
+                          size: 30.0,
+                        ),
+                        onPressed: () => setState(() {
+                              treeInfoVisible = true;
+                            })
+                        // showDialog<String>(
+                        //     context: context,
+                        //     builder: (BuildContext context) {
+                        //       return const AlertDialog(
+                        //           content: TreeInformationWidget(
+                        //               title: "TreeInfoWidget"));
+                        //     }),
+                        ),
                   ),
-                  onPressed: () => showDialog<String>(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return const AlertDialog(
-                            content: TreeInformationWidget(title: "Testtitel"));
-                      }),
-                ),
+                ],
               ),
             ],
           ),
+          Align(
+              alignment: Alignment.centerLeft,
+              child: Visibility(
+                  key: const Key("TreeInfoVisibility"),
+                  visible: treeInfoVisible,
+                  child: Padding(
+                    padding: const EdgeInsets.all(10),
+                    child:
+                        TreeInformationWidget(onClosePressed: () => setState(() {
+                          treeInfoVisible = false;
+                          showDialog(context: context, builder: (BuildContext context) {
+                              return const AlertDialog(
+                                  content: TreeInformationWidget());
+                            });
+                        })),
+                  ))
+              //SizedBox(width: 200, child: Container(decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color:Colors.white),))
+              )
         ],
       ),
       floatingActionButton: Row(
@@ -124,5 +151,9 @@ class _ForestMapState extends State<ForestMap> {
         ],
       ),
     );
+  }
+
+  void closePopup() {
+    treeInfoVisible = false;
   }
 }

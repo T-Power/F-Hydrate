@@ -24,19 +24,20 @@ class _SensorPageState extends State<SensorPage> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    sensor = widget.sensor ?? randomSensor();
+    sensor = widget.sensor ?? Sensor.randomSensor();
     tabs = buildTabs(sensor!);
     controller = TabController(length: tabs.length, vsync: this);
   }
 
   @override
   Widget build(BuildContext context) {
-    Sensor sensor = widget.sensor ?? randomSensor();
-    dynamic unit = randomUnit(sensor);
     return Scaffold(
       drawer: DrawerBuilder.build(context),
       appBar: AppBar(
-        title: Text(sensor!.name),
+        title: Text(
+          // sensor.name,
+          'Sensor unbekannt'
+        ),
         bottom: TabBar(
           indicatorColor: Theme.of(context).colorScheme.secondary,
           labelColor: Theme.of(context).colorScheme.secondary,
@@ -71,36 +72,6 @@ class _SensorPageState extends State<SensorPage> with TickerProviderStateMixin {
         ],
       ),
     );
-  }
-
-  Sensor randomSensor() {
-    return Sensor(
-      // name: 'FH DO FB4',
-      temperature: Temperature(Random().nextInt(8000)),
-      volumetricWaterContent: VolumetricWaterContent(Random().nextInt(10000)),
-      electricalConductivity: ElectricalConductivity(Random().nextInt(20000)),
-      salinity: Salinity(Random().nextInt(20000)),
-      totalDissolvedSolids: TotalDissolvedSolids(Random().nextInt(20000),tree: const Tree(
-          targetVolumetricWaterContent: VolumetricWaterContent(2500)));),
-    );
-  }
-
-  dynamic randomUnit(Sensor sensor) {
-    int random = Random().nextInt(4);
-    switch (random) {
-      case 0:
-        return sensor.temperature;
-      case 1:
-        return sensor.volumetricWaterContent;
-      case 2:
-        return sensor.electricalConductivity;
-      case 3:
-        return sensor.salinity;
-      case 4:
-        return sensor.totalDissolvedSolids;
-      default:
-        return sensor.volumetricWaterContent;
-    }
   }
 
   List<Widget> buildTabs(Sensor sensor) {

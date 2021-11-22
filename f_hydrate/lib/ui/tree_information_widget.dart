@@ -53,7 +53,7 @@ class TreeInformationWidgetState extends State<TreeInformationWidget> {
                 const SizedBox(height: 20),
                 createPropertyRow("Name", widget.model.name),
                 createDivider(),
-                createPropertyRow("Typ", widget.model.type),
+                createPropertyRow("Typ", widget.model.type.name),
                 createDivider(),
                 createPropertyRow(
                     "Pflanzdatum", getFormattedDate(widget.model.birthday)),

@@ -16,59 +16,74 @@ class Gauge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
-    print('Width: $screenWidth Height: $screenHeight');
+    BoxConstraints c;
     return SizedBox(child: LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
+      c = constraints;
       return CustomPaint(
         foregroundPainter:
             _GaugePainter(context, unit, targetValue: targetValue),
         size: Size(constraints.maxWidth, constraints.maxHeight),
         child: Center(
-          child: Column(
-            children: [
-              SizedBox(
-                height: screenHeight * 0.2,
-              ),
-              Text(
-                calculateValue(),
-                style: TextStyle(
-                  fontSize: 8 + min((screenWidth / 40), 52),
-                  fontWeight: FontWeight.bold,
-                ),
-                maxLines: 3,
-              ),
-              SizedBox(
-                height: screenHeight * 0.04,
-              ),
-              Text(
-                unit.description,
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 6 + min((screenWidth / 40), 29),
-                ),
-              ),
-              SizedBox(
-                height: screenHeight * 0.04,
-              ),
-              Text(
-                'Zielwert:',
-                style: TextStyle(
-                  fontSize: 6 + min((screenWidth / 40), 29),
-                ),
-              ),
-              Text(
-                '${(targetValue * unit.multiplier).toStringAsFixed(1)} ${unit.unit}',
-                style: TextStyle(
-                  fontSize: 6 + min((screenWidth / 40), 29),
-                ),
-              )
-            ],
-          ),
+          child: buildContent(context, c),
         ),
       );
     }));
+  }
+
+  Widget buildContent(BuildContext context, BoxConstraints constraints) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+    double smallestSide = min(constraints.maxHeight, constraints.maxWidth);
+    print('Width: $screenWidth, height: $screenHeight');
+    print('BoxConstraint Width: ${constraints.maxWidth}, height: ${constraints.maxHeight}');
+    return Column(
+      children: [
+        SizedBox(
+          height: screenHeight * 0.2,
+        ),
+        Text(
+          calculateValue(),
+          style: TextStyle(
+            fontSize: 10 + additionalFontSize(smallestSide, 52),
+            fontWeight: FontWeight.bold,
+          ),
+          maxLines: 3,
+        ),
+        SizedBox(
+          height: screenHeight * 0.04,
+        ),
+        Text(
+          unit.description,
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 8 + additionalFontSize(smallestSide, 29),
+          ),
+        ),
+        SizedBox(
+          height: screenHeight * 0.04,
+        ),
+        Text(
+          'Zielwert:',
+          style: TextStyle(
+            fontSize: 8 + additionalFontSize(smallestSide, 29),
+          ),
+        ),
+        Text(
+          '${(targetValue * unit.multiplier).toStringAsFixed(1)} ${unit.unit}',
+          style: TextStyle(
+            fontSize: 8 + additionalFontSize(smallestSide, 29),
+          ),
+        )
+      ],
+    );
+  }
+
+  double additionalFontSize(num limit, double max) {
+    print('Additional font size screen limit: $limit');
+    double addSize = limit < 350 ? 0 : min((limit / 30), max);
+    print('Additional font size: $addSize');
+    return addSize;
   }
 
   String calculateValue() {
@@ -107,9 +122,13 @@ class _GaugePainter extends CustomPainter {
 
     final centerOfScreen = Offset(size.width / 2, size.height / 1.6);
     double radius = min(size.width, size.height);
-    if (Platform.isIOS || Platform.isAndroid) {
-      radius *= 0.45;
-    } else {
+    try {
+      if (Platform.isIOS || Platform.isAndroid) {
+        radius *= 0.45;
+      } else {
+        radius *= 0.6;
+      }
+    } catch (e) {
       radius *= 0.6;
     }
 
@@ -138,12 +157,15 @@ class _GaugePainter extends CustomPainter {
     canvas.drawArc(Rect.fromCircle(center: centerOfScreen, radius: radius),
         startAngle, currentAngle, false, currentValueCircle);
 
+    double smallestSide = min(size.width, size.height);
+
     final lowerBoundText = TextPainter(textDirection: TextDirection.ltr)
       ..text = TextSpan(
           text: '${(unit.min * unit.multiplier)}',
           style: TextStyle(
               color: Theme.of(context).textTheme.headline2!.color,
-              fontSize: 12 + min((size.width / 40), 30),
+              fontSize:
+                  12 + (smallestSide < 200 ? 0 : min((smallestSide / 40), 30)),
               fontWeight: FontWeight.bold))
       ..layout(minWidth: 0, maxWidth: size.width * 0.25);
     lowerBoundText.paint(canvas, Offset(size.width * 0.28, size.height * 0.9));
@@ -153,7 +175,8 @@ class _GaugePainter extends CustomPainter {
           text: '${(unit.max * unit.multiplier)}',
           style: TextStyle(
               color: Theme.of(context).textTheme.headline2!.color,
-              fontSize: 12 + min((size.width / 40), 30),
+              fontSize:
+                  12 + (smallestSide < 200 ? 0 : min((smallestSide / 40), 30)),
               fontWeight: FontWeight.bold))
       ..layout(minWidth: 0, maxWidth: size.width * 0.25);
     upperBoundText.paint(canvas, Offset(size.width * 0.70, size.height * 0.9));

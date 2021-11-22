@@ -1,34 +1,23 @@
+import 'package:f_hydrate/model/sensor.dart';
+
 import 'geographic_position.dart';
 
 class TreeInformation {
+  String id = "";
   String name = "";
   String type = "";
   DateTime birthday = DateTime.now();
-  double waterLevel = 0;
-  GeographicPosition position = GeographicPosition();
+  GeographicPosition position = const GeographicPosition(0, 0);
+  Sensor sensor = Sensor();
 
-  String printText() {
-    return "Name: " +
-        name +
-        "\nType: " +
-        type +
-        "\nBirthday: " +
-        birthday.toString() +
-        "\nWater Level: " +
-        waterLevel.toString() +
-        "\nLongitude: " +
-        position.longitude.toString() +
-        "\nLatitude: " +
-        position.latitude.toString();
+  static TreeInformation createExample() {
+    var tree = TreeInformation();
+    tree.id = "tree_0123456";
+    tree.name = "Baum 01";
+    tree.type = "Buche";
+    tree.position =
+        const GeographicPosition(51.494111843297155, 7.422219578674077);
+    tree.sensor = Sensor.createExample();
+    return tree;
   }
-
-static TreeInformation createExample(){
-  var tree = TreeInformation();
-  tree.name = "Baum 01";
-  tree.waterLevel = 75.02;
-  tree.type = "Fichte";
-  
-  return tree;
-}
-
 }

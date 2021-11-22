@@ -5,6 +5,8 @@ import 'package:f_hydrate/ui/sensor_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'package:f_hydrate/model/tree_information.dart';
+
 
 class DrawerBuilder {
   static Widget build(BuildContext context) {
@@ -74,7 +76,7 @@ class DrawerBuilder {
                   context,
                   MaterialPageRoute(
                     builder: (context) =>
-                        const TreeInformationWidget(),
+                        TreeInformationWidget(model: TreeInformation.createExample(),),
                   ),
                 );
               },

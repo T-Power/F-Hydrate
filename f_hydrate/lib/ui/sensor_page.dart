@@ -22,7 +22,7 @@ class _SensorPageState extends State<SensorPage> {
     return Scaffold(
       drawer: DrawerBuilder.build(context),
       appBar: AppBar(
-        title: Text('${sensor.name} ${unit.description}'),
+        title: Text('${unit.description}'), //${sensor.name}
       ),
       body: SizedBox(
         width: MediaQuery.of(context).size.width,
@@ -41,7 +41,7 @@ class _SensorPageState extends State<SensorPage> {
 
   Sensor randomSensor() {
     return Sensor(
-      name: 'FH DO FB4',
+      //name: 'FH DO FB4',
       temperature: Temperature(Random().nextInt(8000)),
       volumetricWaterContent: VolumetricWaterContent(Random().nextInt(10000)),
       electricalConductivity: ElectricalConductivity(Random().nextInt(20000)),

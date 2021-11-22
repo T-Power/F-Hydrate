@@ -1,7 +1,11 @@
 /// Gibt die geografische Position eines Objekts an.
 class GeographicPosition {
+
   /// Der Längengrad der geografischen Position.
-  double longitude = 0;
+  final double longitude;
   /// Der Breitengrad der geografischen Position.
-  double latitude = 0;
+  final double latitude;
+
+  const GeographicPosition(this.latitude, this.longitude);
+
 }

@@ -3,8 +3,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
-
 import 'drawer.dart';
+import 'package:f_hydrate/model/tree_information.dart';
+
 
 /* https://pub.dev/packages/flutter_map -> Dokumentation zu flutter_map */
 class ForestMap extends StatefulWidget {
@@ -20,7 +21,7 @@ class _ForestMapState extends State<ForestMap> {
   bool controllerReady = false;
   double zoom = 13.0;
   bool treeInfoVisible = false;
-
+  TreeInformation treeInfo = TreeInformation.createExample();
   /* TODO Hier müssen wir gucken welcher initiale Mittelpunkt Sinn ergibt */
   LatLng initialCenter = LatLng(51.494111843297155, 7.422219578674077);
   MapController mapController = MapController();
@@ -75,7 +76,7 @@ class _ForestMapState extends State<ForestMap> {
                   /* TODO Hier brauchen wir vermutlich sowas wie einen FutureBuilder um alle Bäume,
                   die wir vom Backend bekommen, anzuzeigen */
                   Marker(
-                    point: LatLng(51.494111843297155, 7.422219578674077),
+                    point: LatLng(treeInfo.position.latitude, treeInfo.position.longitude),
                     builder: (ctx) => IconButton(
                         icon: const Icon(
                           Icons.location_on,
@@ -105,7 +106,7 @@ class _ForestMapState extends State<ForestMap> {
                   child: Padding(
                     padding: const EdgeInsets.all(10),
                     child:
-                        TreeInformationWidget(onClosePressed: () => setState(() {
+                        TreeInformationWidget(model: treeInfo, onClosePressed: () => setState(() {
                           treeInfoVisible = false;
                         })),
                   ))
@@ -146,9 +147,5 @@ class _ForestMapState extends State<ForestMap> {
         ],
       ),
     );
-  }
-
-  void closePopup() {
-    treeInfoVisible = false;
   }
 }

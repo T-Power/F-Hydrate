@@ -17,7 +17,7 @@ class TreeInformation {
     tree.type = BiologicalTreeType.createExample();
     tree.position =
         const GeographicPosition(51.494111843297155, 7.422219578674077);
-    tree.sensor = Sensor.createExample();
+    tree.sensor = Sensor.randomSensor();
     return tree;
   }
 }

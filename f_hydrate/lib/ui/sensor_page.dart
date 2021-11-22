@@ -1,15 +1,15 @@
 import 'dart:math';
 
 import 'package:f_hydrate/model/sensor.dart';
-import 'package:f_hydrate/model/tree.dart';
+import 'package:f_hydrate/model/tree_information.dart';
 import 'package:f_hydrate/ui/drawer.dart';
 import 'package:f_hydrate/ui/widgets/gauge.dart';
 import 'package:flutter/material.dart';
 
 class SensorPage extends StatefulWidget {
-  const SensorPage({Key? key, this.sensor}) : super(key: key);
+  const SensorPage({required this.treeInfo, Key? key}) : super(key: key);
 
-  final Sensor? sensor;
+  final TreeInformation treeInfo;
 
   @override
   _SensorPageState createState() => _SensorPageState();
@@ -19,13 +19,11 @@ class _SensorPageState extends State<SensorPage> with TickerProviderStateMixin {
   TabController? controller;
 
   List<Widget> tabs = [];
-  Sensor? sensor;
 
   @override
   void initState() {
     super.initState();
-    sensor = widget.sensor ?? Sensor.randomSensor();
-    tabs = buildTabs(sensor!);
+    tabs = buildTabs(widget.treeInfo.sensor);
     controller = TabController(length: tabs.length, vsync: this);
   }
 
@@ -35,9 +33,8 @@ class _SensorPageState extends State<SensorPage> with TickerProviderStateMixin {
       drawer: DrawerBuilder.build(context),
       appBar: AppBar(
         title: Text(
-          // sensor.name,
-          'Sensor unbekannt'
-        ),
+            // sensor.name,
+            'Unnamed sensor'),
         bottom: TabBar(
           indicatorColor: Theme.of(context).colorScheme.secondary,
           labelColor: Theme.of(context).colorScheme.secondary,

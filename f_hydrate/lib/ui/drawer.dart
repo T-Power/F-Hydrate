@@ -1,9 +1,12 @@
 import 'package:f_hydrate/ui/forestmap.dart';
 import 'package:f_hydrate/ui/not_implemented_widget.dart';
+import 'package:f_hydrate/ui/tree_information_widget.dart';
 import 'package:f_hydrate/ui/sensor_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'package:f_hydrate/model/tree_information.dart';
+
 
 class DrawerBuilder {
   static Widget build(BuildContext context) {
@@ -72,9 +75,8 @@ class DrawerBuilder {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const NotImplementedWidget(
-                      key: Key('treeInformationPopup'),
-                    ),
+                    builder: (context) =>
+                        TreeInformationWidget(model: TreeInformation.createExample(),),
                   ),
                 );
               },

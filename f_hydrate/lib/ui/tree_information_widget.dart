@@ -1,3 +1,4 @@
+import 'package:f_hydrate/model/sensor.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:f_hydrate/model/tree_information.dart';
@@ -32,7 +33,10 @@ class TreeInformationWidgetState extends State<TreeInformationWidget> {
                 Align(alignment: Alignment.topRight, child: IconButton(
                   icon: const Icon(Icons.close),
                   onPressed: () {
-                    widget.onClosePressed;
+                    var closePressed = widget.onClosePressed;
+                    if(closePressed != null){
+                      closePressed();
+                    }
                   },
                 )),
                 const Text(

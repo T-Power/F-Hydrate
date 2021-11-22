@@ -107,13 +107,8 @@ class _ForestMapState extends State<ForestMap> {
                     child:
                         TreeInformationWidget(onClosePressed: () => setState(() {
                           treeInfoVisible = false;
-                          showDialog(context: context, builder: (BuildContext context) {
-                              return const AlertDialog(
-                                  content: TreeInformationWidget());
-                            });
                         })),
                   ))
-              //SizedBox(width: 200, child: Container(decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color:Colors.white),))
               )
         ],
       ),

@@ -74,7 +74,7 @@ class DrawerBuilder {
                   context,
                   MaterialPageRoute(
                     builder: (context) =>
-                        const TreeInformationWidget(title: "Bauminformationen"),
+                        const TreeInformationWidget(),
                   ),
                 );
               },

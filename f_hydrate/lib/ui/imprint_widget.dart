@@ -1,7 +1,5 @@
-import 'dart:html';
-import 'dart:io';
-
 import 'package:f_hydrate/ui/drawer.dart';
+import 'package:f_hydrate/ui/theme_manager.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -27,12 +25,15 @@ class ImprintWidgetState extends State<ImprintWidget> {
   }
 
   dynamic createBody() {
-    return const SingleChildScrollView(
+    return SingleChildScrollView(
         child: Padding(
       padding: EdgeInsets.all(20.0),
       child: SelectableText.rich(
         TextSpan(
-          style: TextStyle(color: Colors.black, fontSize: 15),
+          style: TextStyle(
+              color: ThemeManager.currentTheme().textTheme.headline1!.color ??
+                  Colors.black,
+              fontSize: 15),
           children: <TextSpan>[
             TextSpan(text: '''
 Allgemeine Anschrift:

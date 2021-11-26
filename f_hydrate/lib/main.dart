@@ -1,7 +1,11 @@
+import 'package:f_hydrate/ui/cookies_banner.dart';
 import 'package:f_hydrate/ui/drawer.dart';
 import 'package:f_hydrate/ui/forestmap.dart';
+import 'package:f_hydrate/ui/forestmap_replacement.dart';
 import 'package:f_hydrate/ui/theme_manager.dart';
 import 'package:flutter/material.dart';
+
+import 'model/cookie_manager.dart';
 
 void main() {
   runApp(const MyApp());
@@ -42,6 +46,11 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  // Alternative, um mit statischen Klassen arbeiten zu können
+  // https://stackoverflow.com/questions/48481590/how-to-set-update-state-of-statefulwidget-from-other-statefulwidget-in-flutter
+
+  final CookieManager cookieManager = CookieManager();
+
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done
@@ -52,11 +61,16 @@ class _MyHomePageState extends State<MyHomePage> {
     // than having to individually change instances of widgets.
     return Scaffold(
       drawer: DrawerBuilder.build(context),
-      body: Visibility(
-        child: const ForestMap(
-          title: 'FHydrate - Karte',
-        ),
-        visible: true,
+      body: Stack(
+        children: <Widget>[
+          ForestMap(
+            title: 'FHydrate - Karte',
+            cookieManager: cookieManager,
+          ),
+          CookiesBanner(
+            cookieManager: cookieManager,
+          ),
+        ],
       ),
     );
   }

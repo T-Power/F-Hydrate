@@ -1,4 +1,5 @@
 import 'package:f_hydrate/model/tree_information.dart';
+import 'package:f_hydrate/ui/data_protection_widget.dart';
 import 'package:f_hydrate/ui/forestmap.dart';
 import 'package:f_hydrate/ui/not_implemented_widget.dart';
 import 'package:f_hydrate/ui/sensor_page.dart';
@@ -93,6 +94,18 @@ class DrawerBuilder {
                       treeInfo: TreeInformation.createExample(),
                       key: const Key('sensorData'),
                     ),
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              title: const Text('Datenschutz'),
+              leading: const Icon(Icons.info),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const DataProtectionWidget(),
                   ),
                 );
               },

@@ -5,10 +5,11 @@ import 'package:flutter/services.dart';
 class ThemeManager {
   // static const Color primaryColor = Colors.white;
   static const Color primaryColor = Color(
-    0xff459535,
+    0xff00582E,
   );
 
   static const Color accentColor = Color(
+    // 0xff0A2342,
     0xff2AA9E1,
   );
   static final Color backGroundColor = Colors.grey.shade300;
@@ -20,11 +21,13 @@ class ThemeManager {
   // static final Color primaryColorDark = Colors.grey.shade300;
 
   static const Color primaryColorDark = Color(
-    0xff00582E,
+    // 0xff459535,
+    0xff459535,
   );
 
   static const Color accentColorDark = Color(
-    0xff2AA9E1,
+    0xff0A2342,
+    // 0xff2AA9E1,
   );
   static final Color backGroundColorDark = Colors.grey.shade800;
 

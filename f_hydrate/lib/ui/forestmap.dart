@@ -1,3 +1,4 @@
+import 'package:f_hydrate/model/cookie_manager.dart';
 import 'package:f_hydrate/ui/tree_information_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -6,10 +7,15 @@ import 'package:latlong2/latlong.dart';
 import 'drawer.dart';
 import 'package:f_hydrate/model/tree_information.dart';
 
+import 'forestmap_replacement.dart';
 
-/* https://pub.dev/packages/flutter_map -> Dokumentation zu flutter_map */
+/// https://pub.dev/packages/flutter_map -> Dokumentation zu flutter_map
+/// Integration einer Map, basierend auf Open Street Map.
 class ForestMap extends StatefulWidget {
-  const ForestMap({Key? key, required this.title}) : super(key: key);
+  final CookieManager cookieManager;
+
+  const ForestMap({Key? key, required this.title, required this.cookieManager})
+      : super(key: key);
 
   final String title;
 
@@ -19,132 +25,179 @@ class ForestMap extends StatefulWidget {
 
 class _ForestMapState extends State<ForestMap> {
   bool controllerReady = false;
+  /// Der initiale Zoom
   double zoom = 13.0;
   bool treeInfoVisible = false;
   TreeInformation treeInfo = TreeInformation.createExample();
-  /* TODO Hier müssen wir gucken welcher initiale Mittelpunkt Sinn ergibt */
-  LatLng initialCenter = LatLng(51.494111843297155, 7.422219578674077);
+
+  /// Die initialen Koordinaten sind Dortmunds Koordinaten
+  LatLng center = LatLng(51.5135872, 7.4652981);
   MapController mapController = MapController();
 
   @override
   void initState() {
     super.initState();
+    /// Wenn der MapController noch nicht bereit ist, kann es an verschiedenen Stellen
+    /// zu Schwierigkeiten kommen
     mapController.onReady.then((_) => controllerReady = true);
+    /// Listener um bei Änderungen an den Cookie-Informationen benachrichtigt zu werden
+    widget.cookieManager.addListener(() {
+      setState(() {
+        /// Map wird nur initialisiert, wenn Cookies akzeptiert wurden
+        initMap();
+      });
+    });
+  }
+
+  /// https://api.flutter.dev/flutter/widgets/State-class.html
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    /// Map wird nur initialisiert, wenn Cookies akzeptiert wurden
+    initMap();
   }
 
   void _zoom(double value) {
     if (controllerReady) {
       double newValue = mapController.zoom + value;
-      if (newValue > 1 && newValue < 19) {
-        mapController.move(mapController.center, newValue);
-      }
+      mapController.move(mapController.center, newValue);
     }
   }
 
   void _center() {
     if (controllerReady) {
-      mapController.move(initialCenter, mapController.zoom);
+      mapController.move(center, mapController.zoom);
+    }
+  }
+
+  /// Die Map wird gar nicht initialisiert, solange die Cookies nicht akzeptiert wurden
+  Widget shownMap = Container();
+
+  /// Die Initialisierung der Map wurde hierhin ausgelagert
+  /// und an eine entsprechende Bedingung geknüpft
+  void initMap() {
+    if (widget.cookieManager.isAccepted()) {
+      shownMap = FlutterMap(
+        mapController: mapController,
+        options: MapOptions(
+          center: center,
+          zoom: zoom,
+          /// Bei größerem/kleinerem Zoom würde nur grauer Bildschirm angezeigt
+          maxZoom: 18,
+          minZoom: 2,
+          /// Wenn die Flags nicht eingeschränkt würden, ließe sich der Bildschirm
+          /// am Handy rotieren, was leicht irritierend ist.
+          interactiveFlags: InteractiveFlag.pinchZoom | InteractiveFlag.drag,
+        ),
+        layers: [
+          TileLayerOptions(
+            urlTemplate:
+            "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+            subdomains: ['a', 'b', 'c'],
+            attributionBuilder: (_) {
+              return const Text(
+                "© OpenStreetMap contributors",
+                style: TextStyle(backgroundColor: Colors.white),
+              );
+            },
+          ),
+          MarkerLayerOptions(
+            markers: [
+              Marker(
+                point: LatLng(treeInfo.position.latitude,
+                    treeInfo.position.longitude),
+                builder: (ctx) => IconButton(
+                    icon: const Icon(
+                      Icons.location_on,
+                      size: 30.0,
+                    ),
+                    onPressed: () => setState(() {
+                      treeInfoVisible = true;
+                    })
+                  // showDialog<String>(
+                  //     context: context,
+                  //     builder: (BuildContext context) {
+                  //       return const AlertDialog(
+                  //           content: TreeInformationWidget(
+                  //               title: "TreeInfoWidget"));
+                  //     }),
+                ),
+              ),
+            ],
+          ),
+        ],
+      );
+    } else {
+      shownMap = Container();
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      drawer: DrawerBuilder.build(context),
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Stack(
-        children: [
-          FlutterMap(
-            mapController: mapController,
-            options: MapOptions(
-              center: initialCenter,
-              zoom: zoom,
-            ),
-            layers: [
-              TileLayerOptions(
-                urlTemplate:
-                    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-                subdomains: ['a', 'b', 'c'],
-                attributionBuilder: (_) {
-                  return const Text("© OpenStreetMap contributors");
-                },
+    return Visibility(
+      child: Scaffold(
+        drawer: DrawerBuilder.build(context),
+        appBar: AppBar(
+          title: Text(widget.title),
+        ),
+        body: Stack(
+          children: [
+            shownMap,
+            Align(
+                alignment: Alignment.centerLeft,
+                child: Visibility(
+                    key: const Key("TreeInfoVisibility"),
+                    visible: treeInfoVisible,
+                    child: Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: TreeInformationWidget(
+                          model: treeInfo,
+                          onClosePressed: () => setState(() {
+                                treeInfoVisible = false;
+                              })),
+                    )))
+          ],
+        ),
+        floatingActionButton: Row(
+          // https://www.youtube.com/watch?v=nvAh3ENt2Kk&t=98s
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: <Widget>[
+            FloatingActionButton(
+              heroTag: "btnCenter",
+              onPressed: () => _center(),
+              child: const Icon(
+                Icons.my_location,
               ),
-              MarkerLayerOptions(
-                markers: [
-                  /* TODO Hier brauchen wir vermutlich sowas wie einen FutureBuilder um alle Bäume,
-                  die wir vom Backend bekommen, anzuzeigen */
-                  Marker(
-                    point: LatLng(treeInfo.position.latitude, treeInfo.position.longitude),
-                    builder: (ctx) => IconButton(
-                        icon: const Icon(
-                          Icons.location_on,
-                          size: 30.0,
-                        ),
-                        onPressed: () => setState(() {
-                              treeInfoVisible = true;
-                            })
-                        // showDialog<String>(
-                        //     context: context,
-                        //     builder: (BuildContext context) {
-                        //       return const AlertDialog(
-                        //           content: TreeInformationWidget(
-                        //               title: "TreeInfoWidget"));
-                        //     }),
-                        ),
-                  ),
-                ],
+            ),
+            const SizedBox(
+              width: 10,
+            ),
+            FloatingActionButton(
+              heroTag: "btnZoomOut",
+              onPressed: () => _zoom(-1),
+              child: const Icon(
+                Icons.zoom_out,
               ),
-            ],
-          ),
-          Align(
-              alignment: Alignment.centerLeft,
-              child: Visibility(
-                  key: const Key("TreeInfoVisibility"),
-                  visible: treeInfoVisible,
-                  child: Padding(
-                    padding: const EdgeInsets.all(10),
-                    child:
-                        TreeInformationWidget(model: treeInfo, onClosePressed: () => setState(() {
-                          treeInfoVisible = false;
-                        })),
-                  ))
-              )
-        ],
+            ),
+            const SizedBox(
+              width: 10,
+            ),
+            FloatingActionButton(
+              heroTag: "btnZoomIn",
+              onPressed: () => _zoom(1),
+              child: const Icon(
+                Icons.zoom_in,
+              ),
+            ),
+          ],
+        ),
       ),
-      floatingActionButton: Row(
-        // https://www.youtube.com/watch?v=nvAh3ENt2Kk&t=98s
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: <Widget>[
-          FloatingActionButton(
-            heroTag: "btnCenter",
-            onPressed: () => _center(),
-            child: const Icon(
-              Icons.center_focus_strong,
-            ),
-          ),
-          const SizedBox(
-            width: 10,
-          ),
-          FloatingActionButton(
-            heroTag: "btnZoomOut",
-            onPressed: () => _zoom(-1),
-            child: const Icon(
-              Icons.zoom_out,
-            ),
-          ),
-          const SizedBox(
-            width: 10,
-          ),
-          FloatingActionButton(
-            heroTag: "btnZoomIn",
-            onPressed: () => _zoom(1),
-            child: const Icon(
-              Icons.zoom_in,
-            ),
-          ),
-        ],
+      visible: widget.cookieManager.isAccepted(),
+      /// Wird angezeigt, wenn visible nicht auf true gesetzt ist, und die Karte
+      /// somit nicht angezeigt wird.
+      replacement: ForestMapReplacement(
+        title: 'FHydrate - Karte',
+        cookieManager: widget.cookieManager,
       ),
     );
   }

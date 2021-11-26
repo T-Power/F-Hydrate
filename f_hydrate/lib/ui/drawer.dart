@@ -1,3 +1,4 @@
+import 'package:f_hydrate/model/cookie_manager.dart';
 import 'package:f_hydrate/model/tree_information.dart';
 import 'package:f_hydrate/ui/forestmap.dart';
 import 'package:f_hydrate/ui/not_implemented_widget.dart';
@@ -6,10 +7,12 @@ import 'package:f_hydrate/ui/tree_information_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'cookies_banner.dart';
 import 'imprint_widget.dart';
 
 class DrawerBuilder {
   static Widget build(BuildContext context) {
+    final CookieManager cookieManager = CookieManager();
     return Drawer(
       child: Container(
         color: Theme.of(context).backgroundColor,
@@ -47,8 +50,16 @@ class DrawerBuilder {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const ForestMap(
-                      title: 'Karte',
+                    builder: (context) => Stack(
+                      children: <Widget>[
+                        ForestMap(
+                          title: 'FHydrate - Karte',
+                          cookieManager: cookieManager,
+                        ),
+                        CookiesBanner(
+                          cookieManager: cookieManager,
+                        ),
+                      ],
                     ),
                   ),
                 );

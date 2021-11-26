@@ -8,6 +8,7 @@ import 'package:f_hydrate/ui/tree_information_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+
 import 'cookies_banner.dart';
 import 'imprint_widget.dart';
 
@@ -130,6 +131,20 @@ class DrawerBuilder {
                   MaterialPageRoute(
                     builder: (context) => const ImprintWidget(),
                   ),
+                );
+              },
+            ),
+            ListTile(
+              title: const Text('App Informationen'),
+              leading: const Icon(Icons.info),
+              onTap: () {
+                showAboutDialog(
+                  context: context,
+                  applicationIcon: FlutterLogo(),
+                  applicationName: 'FHydrate',
+                  applicationVersion: '0.0.1',
+                  applicationLegalese: '©2021 FHydrate',
+                  children: <Widget>[],
                 );
               },
             ),

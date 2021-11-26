@@ -34,8 +34,9 @@ class Gauge extends StatelessWidget {
   Widget buildContent(BuildContext context, BoxConstraints constraints) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
+    final density = MediaQuery.of(context).devicePixelRatio;
     double smallestSide = min(constraints.maxHeight, constraints.maxWidth);
-    print('Width: $screenWidth, height: $screenHeight');
+    print('Width: $screenWidth, height: $screenHeight, density: $density');
     print(
         'BoxConstraint Width: ${constraints.maxWidth}, height: ${constraints.maxHeight}');
     return Column(

@@ -84,7 +84,8 @@ class _ForestMapState extends State<ForestMap> {
 
     // When we reach here, permissions are granted and we can
     // continue accessing the position of the device.
-    Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.best);
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.best);
     return LatLng(position.latitude, position.longitude);
   }
 
@@ -112,7 +113,10 @@ class _ForestMapState extends State<ForestMap> {
             urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
             subdomains: ['a', 'b', 'c'],
             attributionBuilder: (_) {
-              return const Text("© OpenStreetMap contributors");
+              return const Text(
+                "© OpenStreetMap contributors",
+                style: TextStyle(backgroundColor: Colors.white),
+              );
             },
           ),
           MarkerLayerOptions(
@@ -157,9 +161,8 @@ class _ForestMapState extends State<ForestMap> {
 
                       /// Wenn kein Standort gefunden wird, dann wird auf den aktuellen Punkt zentriert (was quasi keinen Effekt hat)
                       return center;
-                    }).then((position) => {
-                          mapController.move(position, mapController.zoom),
-                        })
+                    }).then((position) =>
+                        {mapController.move(position, mapController.zoom)})
                   }
               },
               child: const Icon(

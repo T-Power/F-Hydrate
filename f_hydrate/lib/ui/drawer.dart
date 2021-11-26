@@ -6,6 +6,7 @@ import 'package:f_hydrate/ui/tree_information_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'imprint_widget.dart';
 
 class DrawerBuilder {
   static Widget build(BuildContext context) {
@@ -92,6 +93,18 @@ class DrawerBuilder {
                       treeInfo: TreeInformation.createExample(),
                       key: const Key('sensorData'),
                     ),
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              title: const Text('Impressum'),
+              leading: const Icon(Icons.info),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const ImprintWidget(),
                   ),
                 );
               },

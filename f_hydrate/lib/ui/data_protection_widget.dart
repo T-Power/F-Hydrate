@@ -20,18 +20,18 @@ class DataProtectionState extends State<DataProtectionWidget> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: createBody(),
+      body: createBody(context),
     );
   }
 
-  dynamic createBody() {
+  dynamic createBody(BuildContext context) {
     return SingleChildScrollView(
         child: Padding(
       padding: EdgeInsets.all(20.0),
       child: SelectableText.rich(
         TextSpan(
           style: TextStyle(
-              color: ThemeManager.currentTheme().textTheme.headline1!.color ??
+              color: Theme.of(context).textTheme.headline1!.color ??
                   Colors.black,
               fontSize: 15),
           children: <TextSpan>[

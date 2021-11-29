@@ -75,13 +75,14 @@ class Temperature {
 
   @override
   String toString() {
-    return value.toString() + " " + unit;
+    return value.toStringAsFixed(1) + " " + unit;
   }
 
   static num randomValue() {
     Temperature temperature = const Temperature(0);
     num diff = temperature.max - temperature.min;
-    return Random().nextInt((diff).toInt()) - temperature.min.abs();
+    return (Random().nextInt((diff).toInt()) -
+        temperature.min.abs()) * temperature.multiplier;
   }
 
   static Temperature random() {
@@ -101,13 +102,13 @@ class VolumetricWaterContent {
 
   @override
   String toString() {
-    return value.toString() + " " + unit;
+    return value.toStringAsFixed(1) + " " + unit;
   }
 
   static num randomValue() {
     VolumetricWaterContent vwc = const VolumetricWaterContent(0);
     num diff = vwc.max - vwc.min;
-    return Random().nextInt((diff).toInt()) - vwc.min.abs();
+    return (Random().nextInt((diff).toInt()) - vwc.min.abs()) * vwc.multiplier;
   }
 
   static VolumetricWaterContent random() {
@@ -127,13 +128,13 @@ class ElectricalConductivity {
 
   @override
   String toString() {
-    return value.toString() + " " + unit;
+    return value.toStringAsFixed(1) + " " + unit;
   }
 
   static num randomValue() {
     ElectricalConductivity ec = const ElectricalConductivity(0);
     num diff = ec.max - ec.min;
-    return Random().nextInt((diff).toInt()) - ec.min.abs();
+    return (Random().nextInt((diff).toInt()) - ec.min.abs()) * ec.multiplier;
   }
 
   static ElectricalConductivity random() {
@@ -153,13 +154,14 @@ class Salinity {
 
   @override
   String toString() {
-    return value.toString() + " " + unit;
+    return value.toStringAsFixed(1) + " " + unit;
   }
 
   static num randomValue() {
     Salinity salinity = const Salinity(0);
     num diff = salinity.max - salinity.min;
-    return Random().nextInt((diff).toInt()) - salinity.min.abs();
+    return (Random().nextInt((diff).toInt()) -
+        salinity.min.abs()) * salinity.multiplier;
   }
 
   static Salinity random() {
@@ -179,13 +181,13 @@ class TotalDissolvedSolids {
 
   @override
   String toString() {
-    return value.toString() + " " + unit;
+    return value.toStringAsFixed(1) + " " + unit;
   }
 
   static num randomValue() {
     TotalDissolvedSolids tds = const TotalDissolvedSolids(0);
     num diff = tds.max - tds.min;
-    return Random().nextInt((diff).toInt()) - tds.min.abs();
+    return (Random().nextInt((diff).toInt()) - tds.min.abs()) * tds.multiplier;
   }
 
   static TotalDissolvedSolids random() {

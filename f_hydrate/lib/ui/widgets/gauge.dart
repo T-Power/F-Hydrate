@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'dart:math';
 
-import 'package:f_hydrate/ui/theme_manager.dart';
 import 'package:flutter/material.dart';
 
 /*
@@ -17,18 +16,21 @@ class Gauge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     BoxConstraints c;
-    return SizedBox(child: LayoutBuilder(
+    return Container(
+      child: LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
-      c = constraints;
-      return CustomPaint(
-        foregroundPainter:
-            _GaugePainter(context, unit, targetValue: targetValue),
-        size: Size(constraints.maxWidth, constraints.maxHeight),
-        child: Center(
-          child: buildContent(context, c),
-        ),
-      );
-    }));
+          c = constraints;
+          return CustomPaint(
+            foregroundPainter:
+                _GaugePainter(context, unit, targetValue: targetValue),
+            size: Size(constraints.maxWidth, constraints.maxHeight),
+            child: Center(
+              child: buildContent(context, c),
+            ),
+          );
+        },
+      ),
+    );
   }
 
   Widget buildContent(BuildContext context, BoxConstraints constraints) {
@@ -108,22 +110,22 @@ class _GaugePainter extends CustomPainter {
       ..color = Theme.of(context).colorScheme.secondary
       ..strokeCap = StrokeCap.round
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 13.0;
+      ..strokeWidth = size.height / 30;
 
     final background = Paint()
       ..color = Theme.of(context).textTheme.headline1!.color ??
           Theme.of(context).primaryColor
       ..strokeCap = StrokeCap.round
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 13.0;
+      ..strokeWidth = size.height / 30;
 
     final targetValueCircle = Paint()
       ..color = Colors.lightGreen
       ..strokeCap = StrokeCap.round
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 33.0;
+      ..strokeWidth = size.height / 20;
 
-    final centerOfScreen = Offset(size.width / 2, size.height / 1.6);
+    final centerOfScreen = Offset(size.width / 2, size.height / 1.5);
     double radius = min(size.width, size.height);
     try {
       if (Platform.isIOS || Platform.isAndroid) {

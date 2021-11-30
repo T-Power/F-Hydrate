@@ -51,20 +51,16 @@ class _SensorPageState extends State<SensorPage> with TickerProviderStateMixin {
       ),
       body: Column(
         children: [
-          SizedBox(
-            height: MediaQuery.of(context).size.height * 0.1,
-          ),
           Expanded(
             child: TabBarView(
               children: tabs,
               controller: controller!,
             ),
           ),
-          SizedBox(
-            height: MediaQuery.of(context).size.height * 0.1,
-          ),
-          TabPageSelector(
-            controller: controller!,
+          Center(
+            child: TabPageSelector(
+              controller: controller!,
+            ),
           ),
         ],
       ),

@@ -39,6 +39,7 @@ dependencies:
   flutter_map: ^0.14.0
   # Für die Koordinaten (Details: https://pub.dev/packages/latlong2)
   latlong2: ^0.8.1
+  url_launcher: ^6.0.15
 
 dev_dependencies:
   flutter_test:
@@ -146,6 +147,10 @@ flutter:
   # assets:
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
+  assets:
+    - assets/icons/favicon.png
+    - assets/icons/fhydrate_tree.png
+    - assets/logos/FHydrateLogo.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

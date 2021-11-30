@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'dart:math';
 
-import 'package:f_hydrate/ui/theme_manager.dart';
 import 'package:flutter/material.dart';
 
 /*
@@ -17,18 +16,21 @@ class Gauge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     BoxConstraints c;
-    return SizedBox(child: LayoutBuilder(
+    return Container(
+      child: LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
-      c = constraints;
-      return CustomPaint(
-        foregroundPainter:
-            _GaugePainter(context, unit, targetValue: targetValue),
-        size: Size(constraints.maxWidth, constraints.maxHeight),
-        child: Center(
-          child: buildContent(context, c),
-        ),
-      );
-    }));
+          c = constraints;
+          return CustomPaint(
+            foregroundPainter:
+                _GaugePainter(context, unit, targetValue: targetValue),
+            size: Size(constraints.maxWidth, constraints.maxHeight),
+            child: Center(
+              child: buildContent(context, c),
+            ),
+          );
+        },
+      ),
+    );
   }
 
   Widget buildContent(BuildContext context, BoxConstraints constraints) {
@@ -47,7 +49,7 @@ class Gauge extends StatelessWidget {
         Text(
           calculateValue(),
           style: TextStyle(
-            fontSize: 10 + additionalFontSize(smallestSide, 52),
+            fontSize: 10 + additionalFontSize(smallestSide, 52, density),
             fontWeight: FontWeight.bold,
           ),
           maxLines: 3,
@@ -59,7 +61,7 @@ class Gauge extends StatelessWidget {
           unit.description,
           style: TextStyle(
             fontWeight: FontWeight.bold,
-            fontSize: 8 + additionalFontSize(smallestSide, 29),
+            fontSize: 8 + additionalFontSize(smallestSide, 29, density),
           ),
         ),
         SizedBox(
@@ -68,22 +70,22 @@ class Gauge extends StatelessWidget {
         Text(
           'Zielwert:',
           style: TextStyle(
-            fontSize: 8 + additionalFontSize(smallestSide, 29),
+            fontSize: 8 + additionalFontSize(smallestSide, 29, density),
           ),
         ),
         Text(
           '${(targetValue * unit.multiplier).toStringAsFixed(1)} ${unit.unit}',
           style: TextStyle(
-            fontSize: 8 + additionalFontSize(smallestSide, 29),
+            fontSize: 8 + additionalFontSize(smallestSide, 29, density),
           ),
         )
       ],
     );
   }
 
-  double additionalFontSize(num limit, double max) {
+  double additionalFontSize(num limit, double max, double density) {
     print('Additional font size screen limit: $limit');
-    double addSize = limit < 350 ? 0 : min((limit / 30), max);
+    double addSize = limit < (100 * density) ? 0 : min((limit / 30), max);
     print('Additional font size: $addSize');
     return addSize;
   }
@@ -105,25 +107,25 @@ class _GaugePainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     print('GaugePainter.paint(). Width: ${size.width} Height: ${size.height}');
     final currentValueCircle = Paint()
-      ..color = ThemeManager.currentTheme().colorScheme.secondary
+      ..color = Theme.of(context).colorScheme.secondary
       ..strokeCap = StrokeCap.round
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 13.0;
+      ..strokeWidth = size.height / 30;
 
     final background = Paint()
-      ..color = ThemeManager.currentTheme().textTheme.headline1!.color ??
-          ThemeManager.currentTheme().primaryColor
+      ..color = Theme.of(context).textTheme.headline1!.color ??
+          Theme.of(context).primaryColor
       ..strokeCap = StrokeCap.round
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 13.0;
+      ..strokeWidth = size.height / 30;
 
     final targetValueCircle = Paint()
       ..color = Colors.lightGreen
       ..strokeCap = StrokeCap.round
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 33.0;
+      ..strokeWidth = size.height / 20;
 
-    final centerOfScreen = Offset(size.width / 2, size.height / 1.6);
+    final centerOfScreen = Offset(size.width / 2, size.height / 1.5);
     double radius = min(size.width, size.height);
     try {
       if (Platform.isIOS || Platform.isAndroid) {

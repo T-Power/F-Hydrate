@@ -39,7 +39,7 @@ class DataProtectionState extends State<DataProtectionWidget> {
 1. Name und Anschrift des Verantwortlichen
 Allgemeine Anschrift:
 
-Dino Schönberg
+Prof. Dr. Dino Schönberg
 Sonnenstraße 96
 44139 Dortmund 
 Tel. +49 (0)231 9112-0

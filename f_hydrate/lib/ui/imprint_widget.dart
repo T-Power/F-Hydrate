@@ -36,7 +36,7 @@ class ImprintWidgetState extends State<ImprintWidget> {
           children: <TextSpan>[
             TextSpan(text: '''
 Allgemeine Anschrift:
-Dino Schönberg
+Prof. Dr. Dino Schönberg
 Sonnenstraße 96
 44139 Dortmund
 

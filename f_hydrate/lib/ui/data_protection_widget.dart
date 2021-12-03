@@ -41,7 +41,8 @@ Allgemeine Anschrift:
 
 Dino Schönberg
 Sonnenstraße 96
-44139 Dortmund Tel. +49 (0)231 9112-0
+44139 Dortmund 
+Tel. +49 (0)231 9112-0
 Fax +49 (0)231 9112-313
 
 Postanschrift:

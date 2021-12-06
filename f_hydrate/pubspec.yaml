@@ -40,6 +40,7 @@ dependencies:
   # Für die Koordinaten (Details: https://pub.dev/packages/latlong2)
   latlong2: ^0.8.1
   url_launcher: ^6.0.15
+  confetti: ^0.6.0
 
 dev_dependencies:
   flutter_test:

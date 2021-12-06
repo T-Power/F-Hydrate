@@ -4,6 +4,7 @@ import 'package:f_hydrate/ui/data_protection_widget.dart';
 import 'package:f_hydrate/ui/forestmap.dart';
 import 'package:f_hydrate/ui/not_implemented_widget.dart';
 import 'package:f_hydrate/ui/sensor_page.dart';
+import 'package:f_hydrate/ui/sensor_page_row.dart';
 import 'package:f_hydrate/ui/tree_information_widget.dart';
 import 'package:f_hydrate/ui/widgets/licenses.dart';
 import 'package:flutter/cupertino.dart';
@@ -112,6 +113,21 @@ class DrawerBuilder {
               },
             ),
             ListTile(
+              title: const Text('Sensordaten 2.0'),
+              leading: const Icon(Icons.speed),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => SensorPageRow(
+                      treeInfo: TreeInformation.createExample(),
+                      key: const Key('sensorData'),
+                    ),
+                  ),
+                );
+              },
+            ),
+            ListTile(
               title: const Text('Datenschutz'),
               leading: const Icon(Icons.info),
               onTap: () {
@@ -139,7 +155,7 @@ class DrawerBuilder {
               title: const Text('App Informationen'),
               leading: const Icon(Icons.info),
               onTap: () {
-                  LicenseDialog.show(context);
+                LicenseDialog.show(context);
               },
             ),
             const SizedBox(

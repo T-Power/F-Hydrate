@@ -1,35 +1,60 @@
 import 'dart:io';
 import 'dart:math';
 
+import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 
 /*
  * Example from https://rm3l.org/creating-a-mid-circle-radial-gauge-in-flutter/
  */
-class Gauge extends StatelessWidget {
-  const Gauge({Key? key, required this.unit, this.targetValue = -1})
+
+class Gauge extends StatefulWidget {
+  const Gauge(
+      {Key? key,
+      required this.unit,
+      this.targetValue = -1})
       : super(key: key);
 
   final dynamic unit;
   final num targetValue;
 
   @override
+  State<Gauge> createState() => _GaugeState();
+}
+
+class _GaugeState extends State<Gauge> {
+  late ConfettiController confetti;
+  late final dynamic unit;
+  late final num targetValue;
+
+  @override
+  void initState() {
+    super.initState();
+    this.unit = widget.unit;
+    this.targetValue = widget.targetValue;
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     BoxConstraints c;
-    return Container(
-      child: LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints constraints) {
-          c = constraints;
-          return CustomPaint(
-            foregroundPainter:
-                _GaugePainter(context, unit, targetValue: targetValue),
-            size: Size(constraints.maxWidth, constraints.maxHeight),
-            child: Center(
-              child: buildContent(context, c),
-            ),
-          );
-        },
-      ),
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints constraints) {
+        c = constraints;
+        Size size = Size(c.maxWidth, c.maxHeight);
+        return CustomPaint(
+          foregroundPainter:
+              _GaugePainter(context, unit, targetValue: targetValue),
+          // size: size,
+          child: Center(
+            child: buildContent(context, c),
+          ),
+        );
+      },
     );
   }
 
@@ -44,7 +69,7 @@ class Gauge extends StatelessWidget {
     return Column(
       children: [
         SizedBox(
-          height: screenHeight * 0.2,
+          height: screenHeight * 0.4,
         ),
         Text(
           calculateValue(),
@@ -78,7 +103,7 @@ class Gauge extends StatelessWidget {
           style: TextStyle(
             fontSize: 8 + additionalFontSize(smallestSide, 29, density),
           ),
-        )
+        ),
       ],
     );
   }

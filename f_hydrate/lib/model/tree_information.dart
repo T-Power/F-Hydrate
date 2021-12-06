@@ -9,6 +9,7 @@ class TreeInformation {
   DateTime birthday = DateTime.now();
   GeographicPosition position = const GeographicPosition(0, 0);
   Sensor sensor = Sensor();
+  List<Sensor> sensors = [];
 
   static TreeInformation createExample() {
     var tree = TreeInformation();
@@ -18,6 +19,9 @@ class TreeInformation {
     tree.position =
         const GeographicPosition(51.494111843297155, 7.422219578674077);
     tree.sensor = Sensor.randomSensor();
+    tree.sensors.add(Sensor.randomSensor());
+    tree.sensors.add(Sensor.randomSensor());
+    tree.sensors.add(Sensor.randomSensor());
     return tree;
   }
 }

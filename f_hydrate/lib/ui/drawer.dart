@@ -29,17 +29,13 @@ class DrawerBuilder {
               accountName: Text(
                 'Hallo ${getUsername()}!',
                 style: TextStyle(
-                    color: Theme.of(context).colorScheme.secondary,
                     fontWeight: FontWeight.bold),
                 overflow: TextOverflow.ellipsis,
               ),
               accountEmail: Text(
                 getEmail(),
-                style:
-                    TextStyle(color: Theme.of(context).colorScheme.secondary),
               ),
               currentAccountPicture: CircleAvatar(
-                foregroundColor: Theme.of(context).primaryColor,
                 backgroundColor: Theme.of(context).colorScheme.secondary,
                 child: Text(
                   getInitials(),

@@ -1,3 +1,5 @@
+/// WIRD MOMENTAN NICHT VERWENDET, KANN BEUTZT WERDEN, FALLS COOKIES ABGELEHNT WERDEN DÜRFEN
+
 /// Gibt Informationen zu den Cookies.
 class Cookies {
   /// Gibt Information, ob Cookies akzeptiert wurden

@@ -38,16 +38,17 @@ class _CookiesBanner extends State<CookiesBanner> {
               content: const Text('Diese Seite verwendet Cookies'),
               leading: const Icon(Icons.info),
               actions: <Widget>[
-                TextButton(
+                /// EINKOMMENTIEREN, FALLS COOKIES ABGELEHNT WERDEN DÜRFEN
+                /*TextButton(
                   child: const Text('Ablehnen'),
                   onPressed: () {
                     setState(() {
                       widget.cookieManager.setAcceptedAndVisible(false, false);
                     });
                   },
-                ),
+                ),*/
                 TextButton(
-                  child: const Text('Akzeptieren'),
+                  child: const Text('Ok'),
                   onPressed: () {
                     setState(() {
                       widget.cookieManager.setAcceptedAndVisible(true, false);

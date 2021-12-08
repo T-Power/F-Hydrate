@@ -47,6 +47,11 @@ class _ForestMapState extends State<ForestMap> {
         initMap();
       });
     });
+
+    /// AUSKOMMENTIEREN, FALLS COOKIES ABGELEHNT WERDEN DÜRFEN
+    if(!widget.cookieManager.isAccepted()) {
+      widget.cookieManager.setAcceptedAndVisible(true, true);
+    }
   }
 
   /// https://api.flutter.dev/flutter/widgets/State-class.html

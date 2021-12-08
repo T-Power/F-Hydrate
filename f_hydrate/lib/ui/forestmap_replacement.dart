@@ -3,6 +3,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'drawer.dart';
 
+/// WIRD MOMENTAN NICHT VERWENDET, KANN BEUTZT WERDEN, FALLS COOKIES ABGELEHNT WERDEN DÜRFEN
+
 /// Das Widget, welches angezeigt werden soll, falls die Map auf datenschutz-technischen
 /// Gründen nicht angezeigt werden darf, wenn die Cookies nicht akzeptiert wurden.
 class ForestMapReplacement extends StatefulWidget {

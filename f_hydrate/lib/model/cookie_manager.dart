@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 
 import 'cookies.dart';
 
+/// WIRD MOMENTAN NICHT VERWENDET, KANN BEUTZT WERDEN, FALLS COOKIES ABGELEHNT WERDEN DÜRFEN
+
 /// Bietet die Möglichkeit Cookies zu verwalten.
 /// Ist notwendig, um die statischen Variablen der Cookie Klasse "stateful"-
 /// ähnlich in Widgets zu nutzen.

@@ -151,7 +151,7 @@ flutter:
   assets:
     - assets/icons/favicon.png
     - assets/icons/fhydrate_tree.png
-    - assets/logos/FHydrateLogo.png
+    - assets/logos/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

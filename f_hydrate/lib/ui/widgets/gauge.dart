@@ -15,17 +15,40 @@ class Gauge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    BoxConstraints c;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+    bool isLandscape = screenHeight < screenWidth;
+    Widget child = buildContent(context);
+    if (!isLandscape) {
+      print("Gauge portrait");
+      return createLayoutBuilder(child);
+    } else {
+      print("Gauge landscape");
+      return Row(
+        children: [
+          SizedBox(
+            width: screenWidth * 0.1,
+          ),
+          child,
+          Expanded(child: createLayoutBuilder(Container())),
+          SizedBox(
+            width: screenWidth * 0.1,
+          ),
+        ],
+      );
+    }
+  }
+
+  Widget createLayoutBuilder(Widget child) {
     return Container(
       child: LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
-          c = constraints;
           return CustomPaint(
             foregroundPainter:
                 _GaugePainter(context, unit, targetValue: targetValue),
             size: Size(constraints.maxWidth, constraints.maxHeight),
             child: Center(
-              child: buildContent(context, c),
+              child: child,
             ),
           );
         },
@@ -33,18 +56,16 @@ class Gauge extends StatelessWidget {
     );
   }
 
-  Widget buildContent(BuildContext context, BoxConstraints constraints) {
+  Widget buildContent(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
     final density = MediaQuery.of(context).devicePixelRatio;
-    double smallestSide = min(constraints.maxHeight, constraints.maxWidth);
+    double smallestSide = min(screenWidth, screenHeight);
     print('Width: $screenWidth, height: $screenHeight, density: $density');
-    print(
-        'BoxConstraint Width: ${constraints.maxWidth}, height: ${constraints.maxHeight}');
     return Column(
       children: [
         SizedBox(
-          height: screenHeight * 0.2,
+          height: screenHeight * 0.3,
         ),
         Text(
           calculateValue(),
@@ -78,14 +99,14 @@ class Gauge extends StatelessWidget {
           style: TextStyle(
             fontSize: 8 + additionalFontSize(smallestSide, 29, density),
           ),
-        )
+        ),
       ],
     );
   }
 
   double additionalFontSize(num limit, double max, double density) {
     print('Additional font size screen limit: $limit');
-    double addSize = limit < (100 * density) ? 0 : min((limit / 30), max);
+    double addSize = limit < (100 * density) ? 0 : min((limit / 70), max);
     print('Additional font size: $addSize');
     return addSize;
   }
@@ -125,16 +146,18 @@ class _GaugePainter extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeWidth = size.height / 20;
 
-    final centerOfScreen = Offset(size.width / 2, size.height / 1.5);
+    final centerOfScreen = Offset(size.width / 2, size.height / 2);
     double radius = min(size.width, size.height);
+    print('Gauge radius: $radius');
     try {
       if (Platform.isIOS || Platform.isAndroid) {
-        radius *= 0.45;
+        radius *= 0.3;
       } else {
-        radius *= 0.6;
+        radius *= 0.4;
       }
     } catch (e) {
-      radius *= 0.6;
+      print(e);
+      radius *= 0.4;
     }
 
     const startAngle = -7 * pi / 6;
@@ -173,7 +196,7 @@ class _GaugePainter extends CustomPainter {
                   12 + (smallestSide < 200 ? 0 : min((smallestSide / 40), 30)),
               fontWeight: FontWeight.bold))
       ..layout(minWidth: 0, maxWidth: size.width * 0.25);
-    lowerBoundText.paint(canvas, Offset(size.width * 0.28, size.height * 0.9));
+    lowerBoundText.paint(canvas, Offset(size.width * 0.28, size.height * 0.75));
 
     final upperBoundText = TextPainter(textDirection: TextDirection.ltr)
       ..text = TextSpan(
@@ -184,7 +207,7 @@ class _GaugePainter extends CustomPainter {
                   12 + (smallestSide < 200 ? 0 : min((smallestSide / 40), 30)),
               fontWeight: FontWeight.bold))
       ..layout(minWidth: 0, maxWidth: size.width * 0.25);
-    upperBoundText.paint(canvas, Offset(size.width * 0.70, size.height * 0.9));
+    upperBoundText.paint(canvas, Offset(size.width * 0.70, size.height * 0.75));
   }
 
   @override

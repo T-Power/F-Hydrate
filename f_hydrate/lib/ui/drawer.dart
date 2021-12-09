@@ -2,9 +2,7 @@ import 'package:f_hydrate/model/cookie_manager.dart';
 import 'package:f_hydrate/model/tree_information.dart';
 import 'package:f_hydrate/ui/data_protection_widget.dart';
 import 'package:f_hydrate/ui/forestmap.dart';
-import 'package:f_hydrate/ui/not_implemented_widget.dart';
 import 'package:f_hydrate/ui/sensor_page.dart';
-import 'package:f_hydrate/ui/tree_information_widget.dart';
 import 'package:f_hydrate/ui/widgets/licenses.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -22,24 +20,11 @@ class DrawerBuilder {
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
-            UserAccountsDrawerHeader(
-              decoration: BoxDecoration(
-                color: Theme.of(context).primaryColor,
-              ),
-              accountName: Text(
-                'Hallo ${getUsername()}!',
-                style: TextStyle(
-                    fontWeight: FontWeight.bold),
-                overflow: TextOverflow.ellipsis,
-              ),
-              accountEmail: Text(
-                getEmail(),
-              ),
-              currentAccountPicture: CircleAvatar(
-                backgroundColor: Theme.of(context).colorScheme.secondary,
-                child: Text(
-                  getInitials(),
-                ),
+            SafeArea(
+              child: Image(
+                image: AssetImage('assets/logos/FHydrateLogo.png'),
+                semanticLabel:
+                    'The FHydrate logo. Containing a stylistic water wave and tree.',
               ),
             ),
             ListTile(
@@ -59,34 +44,6 @@ class DrawerBuilder {
                           cookieManager: cookieManager,
                         ),
                       ],
-                    ),
-                  ),
-                );
-              },
-            ),
-            ListTile(
-              title: const Text('Benachrichtigungen'),
-              leading: const Icon(Icons.notifications),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const NotImplementedWidget(
-                      key: Key('notifications'),
-                    ),
-                  ),
-                );
-              },
-            ),
-            ListTile(
-              title: const Text('Bauminformationen Popup'),
-              leading: const Icon(Icons.info),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => TreeInformationWidget(
-                      model: TreeInformation.createExample(),
                     ),
                   ),
                 );
@@ -135,14 +92,18 @@ class DrawerBuilder {
               title: const Text('App Informationen'),
               leading: const Icon(Icons.info),
               onTap: () {
-                  LicenseDialog.show(context);
+                LicenseDialog.show(context);
               },
             ),
             const SizedBox(
               height: 50,
             ),
             ListTile(
-              title: const Text('Zurück'),
+              title: Text(
+                'Zurück',
+                style:
+                    TextStyle(color: Theme.of(context).colorScheme.secondary),
+              ),
               onTap: () {
                 Navigator.of(context).pop();
               },
@@ -151,17 +112,5 @@ class DrawerBuilder {
         ),
       ),
     );
-  }
-
-  static String getUsername() {
-    return "Mustermann";
-  }
-
-  static String getEmail() {
-    return "mustermann@domain.de";
-  }
-
-  static String getInitials() {
-    return "MM";
   }
 }

@@ -14,42 +14,51 @@ class LicenseDialog {
       //     child: Image(
       //       image: AssetImage('assets/icons/favicon.png'),
       //     )),
-      applicationIcon: FlutterLogo(),
+      // applicationIcon: FlutterLogo(),
+      applicationIcon: ImageIcon(
+        AssetImage('assets/icons/favicon.png'),
+        semanticLabel:
+            'The FHydrate logo. Containing a stylistic water wave and tree.',
+      ),
       applicationName: 'FHydrate',
       applicationVersion: '0.0.1',
       applicationLegalese: '©2021 FHydrate',
       children: <Widget>[
         RichText(
           text: TextSpan(
-              style: TextStyle(
-                  color: Theme.of(context).textTheme.headline1!.color),
-              children: [
-                TextSpan(
-                  text: 'DE:',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).textTheme.headline1!.color,
-                  ),
+            style:
+                TextStyle(color: Theme.of(context).textTheme.headline1!.color),
+            children: [
+              TextSpan(
+                text: 'DE: ',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).textTheme.headline1!.color,
                 ),
-                TextSpan(
-                    text:
-                        'Im Folgenden finden Sie die Lizenzen aller verwendeten Softwarekomponenten. Für den Großteil der Softwarekomponenten finden Sie unter '),
-                TextSpan(
-                  text: pubDev,
-                  style:
-                      TextStyle(color: Theme.of(context).colorScheme.secondary),
-                  recognizer: TapGestureRecognizer()
-                    ..onTap = () async {
-                      final url = pubDev;
-                      if (await canLaunch(url)) {
-                        await launch(
-                          url,
-                          forceSafariVC: false,
-                        );
-                      }
-                    },
-                )
-              ]),
+              ),
+              TextSpan(
+                  text:
+                      'Im Folgenden finden Sie die Lizenzen aller verwendeten Softwarekomponenten. Für den Großteil der Softwarekomponenten finden Sie unter '),
+              TextSpan(
+                text: pubDev,
+                style:
+                    TextStyle(color: Theme.of(context).colorScheme.secondary),
+                recognizer: TapGestureRecognizer()
+                  ..onTap = () async {
+                    final url = pubDev;
+                    if (await canLaunch(url)) {
+                      await launch(
+                        url,
+                        forceSafariVC: false,
+                      );
+                    }
+                  },
+              ),
+              TextSpan(
+                text: ' weitere Informationen.',
+              ),
+            ],
+          ),
         ),
       ],
     );

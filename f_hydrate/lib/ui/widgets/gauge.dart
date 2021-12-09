@@ -44,7 +44,7 @@ class Gauge extends StatelessWidget {
     return Column(
       children: [
         SizedBox(
-          height: screenHeight * 0.2,
+          height: screenHeight * 0.4,
         ),
         Text(
           calculateValue(),
@@ -78,7 +78,7 @@ class Gauge extends StatelessWidget {
           style: TextStyle(
             fontSize: 8 + additionalFontSize(smallestSide, 29, density),
           ),
-        )
+        ),
       ],
     );
   }
@@ -129,9 +129,9 @@ class _GaugePainter extends CustomPainter {
     double radius = min(size.width, size.height);
     try {
       if (Platform.isIOS || Platform.isAndroid) {
-        radius *= 0.45;
+        radius *= 0.4;
       } else {
-        radius *= 0.6;
+        radius *= 0.5;
       }
     } catch (e) {
       radius *= 0.6;

@@ -97,7 +97,7 @@ class _ForestMapState extends State<ForestMap> {
         layers: [
           TileLayerOptions(
             urlTemplate:
-            "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+            "https://{s}.tile.openstreetmap.de/{z}/{x}/{y}.png",
             subdomains: ['a', 'b', 'c'],
             attributionBuilder: (_) {
               return const Text(

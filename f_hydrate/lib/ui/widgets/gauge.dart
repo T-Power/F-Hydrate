@@ -7,21 +7,26 @@ import 'package:flutter/material.dart';
  * Example from https://rm3l.org/creating-a-mid-circle-radial-gauge-in-flutter/
  */
 class Gauge extends StatelessWidget {
-  const Gauge({Key? key, required this.unit, this.targetValue = -1})
+  const Gauge(
+      {Key? key,
+      required this.unit,
+      this.targetValue = -1,
+      this.constraints = const BoxConstraints()})
       : super(key: key);
 
   final dynamic unit;
   final num targetValue;
+  final BoxConstraints constraints;
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = constraints.maxWidth;
+    final screenHeight = constraints.maxHeight;
     bool isLandscape = screenHeight < screenWidth;
     Widget child = buildContent(context);
     if (!isLandscape) {
       print("Gauge portrait");
-      return createLayoutBuilder(child);
+      return createLayoutBuilder(context, child);
     } else {
       print("Gauge landscape");
       return Row(
@@ -30,7 +35,7 @@ class Gauge extends StatelessWidget {
             width: screenWidth * 0.1,
           ),
           child,
-          Expanded(child: createLayoutBuilder(Container())),
+          Expanded(child: createLayoutBuilder(context, Container())),
           SizedBox(
             width: screenWidth * 0.1,
           ),
@@ -39,33 +44,29 @@ class Gauge extends StatelessWidget {
     }
   }
 
-  Widget createLayoutBuilder(Widget child) {
+  Widget createLayoutBuilder(BuildContext context, Widget child) {
     return Container(
-      child: LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints constraints) {
-          return CustomPaint(
-            foregroundPainter:
-                _GaugePainter(context, unit, targetValue: targetValue),
-            size: Size(constraints.maxWidth, constraints.maxHeight),
-            child: Center(
-              child: child,
-            ),
-          );
-        },
+      child: CustomPaint(
+        foregroundPainter:
+            _GaugePainter(context, unit, targetValue: targetValue),
+        size: Size(constraints.maxWidth, constraints.maxHeight),
+        child: Center(
+          child: child,
+        ),
       ),
     );
   }
 
   Widget buildContent(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = constraints.maxWidth;
+    final screenHeight = constraints.maxHeight;
     final density = MediaQuery.of(context).devicePixelRatio;
     double smallestSide = min(screenWidth, screenHeight);
     print('Width: $screenWidth, height: $screenHeight, density: $density');
     return Column(
       children: [
         SizedBox(
-          height: screenHeight * 0.3,
+          height: screenHeight * 0.05,
         ),
         Text(
           calculateValue(),
@@ -76,14 +77,15 @@ class Gauge extends StatelessWidget {
           maxLines: 3,
         ),
         SizedBox(
-          height: screenHeight * 0.04,
+          height: screenHeight * 0.02,
         ),
         Text(
-          unit.description,
+          unit.description.toString().replaceAll(" ", "\n"),
           style: TextStyle(
             fontWeight: FontWeight.bold,
-            fontSize: 8 + additionalFontSize(smallestSide, 29, density),
+            fontSize: 5 + additionalFontSize(smallestSide, 29, density),
           ),
+          textAlign: TextAlign.center,
         ),
         SizedBox(
           height: screenHeight * 0.04,

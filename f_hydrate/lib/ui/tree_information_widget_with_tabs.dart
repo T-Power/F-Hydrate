@@ -36,10 +36,16 @@ class TreeInformationWidgetTabState extends State<TreeInformationWidgetTab> {
     if (!(content is Container)) {
       return;
     }
-    double width = MediaQuery.of(context).size.width *
-        MediaQuery.of(context).devicePixelRatio;
+    double screenWidth = MediaQuery.of(context).size.width;
+    double width = screenWidth * MediaQuery.of(context).devicePixelRatio;
+    double dialogWidth = width * 0.25;
+    if (screenWidth < 500) {
+      dialogWidth = width * 0.9;
+    } else if (screenWidth < 1000){
+      dialogWidth = width * 0.5;
+    }
     content = SizedBox(
-      width: width * 0.25,
+      width: dialogWidth,
       child: new LayoutBuilder(
           builder: (BuildContext context, BoxConstraints constraints) {
         return Container(

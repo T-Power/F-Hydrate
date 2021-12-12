@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 /*
  * Example from https://rm3l.org/creating-a-mid-circle-radial-gauge-in-flutter/
  */
-class Gauge extends StatelessWidget {
+class Gauge extends StatefulWidget {
   const Gauge(
       {Key? key,
       required this.unit,
@@ -19,17 +19,36 @@ class Gauge extends StatelessWidget {
   final BoxConstraints constraints;
 
   @override
+  GaugeState createState() => GaugeState();
+}
+
+class GaugeState extends State<Gauge> {
+  BoxConstraints constraints = BoxConstraints();
+  dynamic unit;
+  num targetValue = -999;
+
+  @override
+  void initState() {
+    super.initState();
+    constraints = widget.constraints;
+    unit = widget.unit;
+    targetValue = widget.targetValue;
+  }
+
+  @override
   Widget build(BuildContext context) {
     Widget child = buildContent(context);
     return createLayoutBuilder(context, child);
   }
 
   Widget createLayoutBuilder(BuildContext context, Widget child) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
     return Container(
       child: CustomPaint(
         foregroundPainter:
             _GaugePainter(context, unit, targetValue: targetValue),
-        size: Size(constraints.maxWidth, constraints.maxHeight),
+        size: Size(screenWidth, screenHeight),
         child: Center(
           child: child,
         ),
@@ -38,57 +57,57 @@ class Gauge extends StatelessWidget {
   }
 
   Widget buildContent(BuildContext context) {
-    final screenWidth = constraints.maxWidth;
-    final screenHeight = constraints.maxHeight;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
     final density = MediaQuery.of(context).devicePixelRatio;
     double smallestSide = min(screenWidth, screenHeight);
     print('Width: $screenWidth, height: $screenHeight, density: $density');
-    return Column(
-      children: [
-        SizedBox(
-          height: screenHeight * 0.3,
-        ),
-        Text(
-          calculateValue(),
-          style: TextStyle(
-            fontSize: 10 + additionalFontSize(smallestSide, 52, density),
-            fontWeight: FontWeight.bold,
+    return SingleChildScrollView(
+      scrollDirection: Axis.vertical,
+      child: Column(
+        children: [
+          Text(
+            calculateValue(),
+            style: TextStyle(
+              fontSize: 10 + additionalFontSize(smallestSide, 52, density),
+              fontWeight: FontWeight.bold,
+            ),
+            maxLines: 3,
           ),
-          maxLines: 3,
-        ),
-        SizedBox(
-          height: screenHeight * 0.02,
-        ),
-        Text(
-          unit.description.toString().replaceAll(" ", "\n"),
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 5 + additionalFontSize(smallestSide, 29, density),
+          SizedBox(
+            height: screenHeight * 0.02,
           ),
-          textAlign: TextAlign.center,
-        ),
-        SizedBox(
-          height: screenHeight * 0.04,
-        ),
-        Text(
-          'Zielwert:',
-          style: TextStyle(
-            fontSize: 8 + additionalFontSize(smallestSide, 29, density),
+          Text(
+            unit.description.toString().replaceAll(" ", "\n"),
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 5 + additionalFontSize(smallestSide, 29, density),
+            ),
+            textAlign: TextAlign.center,
           ),
-        ),
-        Text(
-          '${(targetValue * unit.multiplier).toStringAsFixed(1)} ${unit.unit}',
-          style: TextStyle(
-            fontSize: 8 + additionalFontSize(smallestSide, 29, density),
+          SizedBox(
+            height: screenHeight * 0.04,
           ),
-        ),
-      ],
+          Text(
+            'Zielwert:',
+            style: TextStyle(
+              fontSize: 8 + additionalFontSize(smallestSide, 29, density),
+            ),
+          ),
+          Text(
+            '${(targetValue * unit.multiplier).toStringAsFixed(1)} ${unit.unit}',
+            style: TextStyle(
+              fontSize: 8 + additionalFontSize(smallestSide, 29, density),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
   double additionalFontSize(num limit, double max, double density) {
     print('Additional font size screen limit: $limit');
-    double addSize = limit < (100 * density) ? 0 : min((limit / 70), max);
+    double addSize = limit < (100 * density) ? 0 : min((limit / 80), max);
     print('Additional font size: $addSize');
     return addSize;
   }
@@ -126,7 +145,7 @@ class _GaugePainter extends CustomPainter {
       ..color = Colors.lightGreen
       ..strokeCap = StrokeCap.round
       ..style = PaintingStyle.stroke
-      ..strokeWidth = size.height / 30;
+      ..strokeWidth = size.height / 28;
 
     final centerOfScreen = Offset(size.width / 2, size.height / 2);
     double radius = min(size.width, size.height);

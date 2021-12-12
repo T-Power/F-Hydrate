@@ -20,28 +20,8 @@ class Gauge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = constraints.maxWidth;
-    final screenHeight = constraints.maxHeight;
-    bool isLandscape = screenHeight < screenWidth;
     Widget child = buildContent(context);
-    if (!isLandscape) {
-      print("Gauge portrait");
-      return createLayoutBuilder(context, child);
-    } else {
-      print("Gauge landscape");
-      return Row(
-        children: [
-          SizedBox(
-            width: screenWidth * 0.1,
-          ),
-          child,
-          Expanded(child: createLayoutBuilder(context, Container())),
-          SizedBox(
-            width: screenWidth * 0.1,
-          ),
-        ],
-      );
-    }
+    return createLayoutBuilder(context, child);
   }
 
   Widget createLayoutBuilder(BuildContext context, Widget child) {
@@ -66,7 +46,7 @@ class Gauge extends StatelessWidget {
     return Column(
       children: [
         SizedBox(
-          height: screenHeight * 0.05,
+          height: screenHeight * 0.3,
         ),
         Text(
           calculateValue(),
@@ -133,20 +113,20 @@ class _GaugePainter extends CustomPainter {
       ..color = Theme.of(context).colorScheme.secondary
       ..strokeCap = StrokeCap.round
       ..style = PaintingStyle.stroke
-      ..strokeWidth = size.height / 30;
+      ..strokeWidth = size.height / 40;
 
     final background = Paint()
       ..color = Theme.of(context).textTheme.headline1!.color ??
           Theme.of(context).primaryColor
       ..strokeCap = StrokeCap.round
       ..style = PaintingStyle.stroke
-      ..strokeWidth = size.height / 30;
+      ..strokeWidth = size.height / 40;
 
     final targetValueCircle = Paint()
       ..color = Colors.lightGreen
       ..strokeCap = StrokeCap.round
       ..style = PaintingStyle.stroke
-      ..strokeWidth = size.height / 20;
+      ..strokeWidth = size.height / 30;
 
     final centerOfScreen = Offset(size.width / 2, size.height / 2);
     double radius = min(size.width, size.height);

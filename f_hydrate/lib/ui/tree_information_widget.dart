@@ -21,11 +21,6 @@ class TreeInformationWidget extends StatefulWidget {
 class TreeInformationWidgetState extends State<TreeInformationWidget> {
   final bool _useList = true;
   final List<Widget> contentWidgets = [];
-  Widget volumetricWaterContent = Container();
-  Widget temperature = Container();
-  Widget electricalConductivity = Container();
-  Widget salinity = Container();
-  Widget totalDissolvedSolids = Container();
 
   @override
   void initState() {
@@ -36,7 +31,6 @@ class TreeInformationWidgetState extends State<TreeInformationWidget> {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width *
         MediaQuery.of(context).devicePixelRatio;
-    print(width);
     return SizedBox(
       width: width * 0.25,
       child: new LayoutBuilder(
@@ -203,6 +197,6 @@ class TreeInformationWidgetState extends State<TreeInformationWidget> {
   }
 
   Divider createDivider() {
-    return const Divider(color: Colors.grey);
+    return Divider(color: Theme.of(context).textTheme.headline1!.color);
   }
 }

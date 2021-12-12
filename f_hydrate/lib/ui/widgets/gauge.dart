@@ -6,52 +6,52 @@ import 'package:flutter/material.dart';
 /*
  * Example from https://rm3l.org/creating-a-mid-circle-radial-gauge-in-flutter/
  */
-class Gauge extends StatelessWidget {
-  const Gauge({Key? key, required this.unit, this.targetValue = -1})
+class Gauge extends StatefulWidget {
+  const Gauge(
+      {Key? key,
+      required this.unit,
+      this.targetValue = -1,
+      this.constraints = const BoxConstraints()})
       : super(key: key);
 
   final dynamic unit;
   final num targetValue;
+  final BoxConstraints constraints;
+
+  @override
+  GaugeState createState() => GaugeState();
+}
+
+class GaugeState extends State<Gauge> {
+  BoxConstraints constraints = BoxConstraints();
+  dynamic unit;
+  num targetValue = -999;
+
+  @override
+  void initState() {
+    super.initState();
+    constraints = widget.constraints;
+    unit = widget.unit;
+    targetValue = widget.targetValue;
+  }
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
-    bool isLandscape = screenHeight < screenWidth;
     Widget child = buildContent(context);
-    if (!isLandscape) {
-      print("Gauge portrait");
-      return createLayoutBuilder(child);
-    } else {
-      print("Gauge landscape");
-      return Row(
-        children: [
-          SizedBox(
-            width: screenWidth * 0.1,
-          ),
-          child,
-          Expanded(child: createLayoutBuilder(Container())),
-          SizedBox(
-            width: screenWidth * 0.1,
-          ),
-        ],
-      );
-    }
+    return createLayoutBuilder(context, child);
   }
 
-  Widget createLayoutBuilder(Widget child) {
+  Widget createLayoutBuilder(BuildContext context, Widget child) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
     return Container(
-      child: LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints constraints) {
-          return CustomPaint(
-            foregroundPainter:
-                _GaugePainter(context, unit, targetValue: targetValue),
-            size: Size(constraints.maxWidth, constraints.maxHeight),
-            child: Center(
-              child: child,
-            ),
-          );
-        },
+      child: CustomPaint(
+        foregroundPainter:
+            _GaugePainter(context, unit, targetValue: targetValue),
+        size: Size(screenWidth, screenHeight),
+        child: Center(
+          child: child,
+        ),
       ),
     );
   }
@@ -62,51 +62,52 @@ class Gauge extends StatelessWidget {
     final density = MediaQuery.of(context).devicePixelRatio;
     double smallestSide = min(screenWidth, screenHeight);
     print('Width: $screenWidth, height: $screenHeight, density: $density');
-    return Column(
-      children: [
-        SizedBox(
-          height: screenHeight * 0.3,
-        ),
-        Text(
-          calculateValue(),
-          style: TextStyle(
-            fontSize: 10 + additionalFontSize(smallestSide, 52, density),
-            fontWeight: FontWeight.bold,
+    return SingleChildScrollView(
+      scrollDirection: Axis.vertical,
+      child: Column(
+        children: [
+          Text(
+            calculateValue(),
+            style: TextStyle(
+              fontSize: 10 + additionalFontSize(smallestSide, 52, density),
+              fontWeight: FontWeight.bold,
+            ),
+            maxLines: 3,
           ),
-          maxLines: 3,
-        ),
-        SizedBox(
-          height: screenHeight * 0.04,
-        ),
-        Text(
-          unit.description,
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 8 + additionalFontSize(smallestSide, 29, density),
+          SizedBox(
+            height: screenHeight * 0.02,
           ),
-        ),
-        SizedBox(
-          height: screenHeight * 0.04,
-        ),
-        Text(
-          'Zielwert:',
-          style: TextStyle(
-            fontSize: 8 + additionalFontSize(smallestSide, 29, density),
+          Text(
+            unit.description.toString().replaceAll(" ", "\n"),
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 5 + additionalFontSize(smallestSide, 29, density),
+            ),
+            textAlign: TextAlign.center,
           ),
-        ),
-        Text(
-          '${(targetValue * unit.multiplier).toStringAsFixed(1)} ${unit.unit}',
-          style: TextStyle(
-            fontSize: 8 + additionalFontSize(smallestSide, 29, density),
+          SizedBox(
+            height: screenHeight * 0.04,
           ),
-        ),
-      ],
+          Text(
+            'Zielwert:',
+            style: TextStyle(
+              fontSize: 8 + additionalFontSize(smallestSide, 29, density),
+            ),
+          ),
+          Text(
+            '${(targetValue * unit.multiplier).toStringAsFixed(1)} ${unit.unit}',
+            style: TextStyle(
+              fontSize: 8 + additionalFontSize(smallestSide, 29, density),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
   double additionalFontSize(num limit, double max, double density) {
     print('Additional font size screen limit: $limit');
-    double addSize = limit < (100 * density) ? 0 : min((limit / 70), max);
+    double addSize = limit < (100 * density) ? 0 : min((limit / 80), max);
     print('Additional font size: $addSize');
     return addSize;
   }
@@ -131,20 +132,20 @@ class _GaugePainter extends CustomPainter {
       ..color = Theme.of(context).colorScheme.secondary
       ..strokeCap = StrokeCap.round
       ..style = PaintingStyle.stroke
-      ..strokeWidth = size.height / 30;
+      ..strokeWidth = size.height / 40;
 
     final background = Paint()
       ..color = Theme.of(context).textTheme.headline1!.color ??
           Theme.of(context).primaryColor
       ..strokeCap = StrokeCap.round
       ..style = PaintingStyle.stroke
-      ..strokeWidth = size.height / 30;
+      ..strokeWidth = size.height / 40;
 
     final targetValueCircle = Paint()
       ..color = Colors.lightGreen
       ..strokeCap = StrokeCap.round
       ..style = PaintingStyle.stroke
-      ..strokeWidth = size.height / 20;
+      ..strokeWidth = size.height / 28;
 
     final centerOfScreen = Offset(size.width / 2, size.height / 2);
     double radius = min(size.width, size.height);

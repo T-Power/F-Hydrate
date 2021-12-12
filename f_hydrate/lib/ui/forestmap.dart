@@ -1,12 +1,13 @@
 import 'package:f_hydrate/model/cookie_manager.dart';
+import 'package:f_hydrate/model/tree_information.dart';
 import 'package:f_hydrate/ui/tree_information_widget.dart';
+import 'package:f_hydrate/ui/tree_information_widget_with_tabs.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
-import 'drawer.dart';
-import 'package:f_hydrate/model/tree_information.dart';
 
+import 'drawer.dart';
 import 'forestmap_replacement.dart';
 
 /// https://pub.dev/packages/flutter_map -> Dokumentation zu flutter_map
@@ -25,6 +26,7 @@ class ForestMap extends StatefulWidget {
 
 class _ForestMapState extends State<ForestMap> {
   bool controllerReady = false;
+
   /// Der initiale Zoom
   double zoom = 13.0;
   bool treeInfoVisible = false;
@@ -37,9 +39,11 @@ class _ForestMapState extends State<ForestMap> {
   @override
   void initState() {
     super.initState();
+
     /// Wenn der MapController noch nicht bereit ist, kann es an verschiedenen Stellen
     /// zu Schwierigkeiten kommen
     mapController.onReady.then((_) => controllerReady = true);
+
     /// Listener um bei Änderungen an den Cookie-Informationen benachrichtigt zu werden
     widget.cookieManager.addListener(() {
       setState(() {
@@ -49,7 +53,7 @@ class _ForestMapState extends State<ForestMap> {
     });
 
     /// AUSKOMMENTIEREN, FALLS COOKIES ABGELEHNT WERDEN DÜRFEN
-    if(!widget.cookieManager.isAccepted()) {
+    if (!widget.cookieManager.isAccepted()) {
       widget.cookieManager.setAcceptedAndVisible(true, true);
     }
   }
@@ -58,6 +62,7 @@ class _ForestMapState extends State<ForestMap> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+
     /// Map wird nur initialisiert, wenn Cookies akzeptiert wurden
     initMap();
   }
@@ -87,17 +92,18 @@ class _ForestMapState extends State<ForestMap> {
         options: MapOptions(
           center: center,
           zoom: zoom,
+
           /// Bei größerem/kleinerem Zoom würde nur grauer Bildschirm angezeigt
           maxZoom: 18,
           minZoom: 2,
+
           /// Wenn die Flags nicht eingeschränkt würden, ließe sich der Bildschirm
           /// am Handy rotieren, was leicht irritierend ist.
           interactiveFlags: InteractiveFlag.pinchZoom | InteractiveFlag.drag,
         ),
         layers: [
           TileLayerOptions(
-            urlTemplate:
-            "https://{s}.tile.openstreetmap.de/{z}/{x}/{y}.png",
+            urlTemplate: "https://{s}.tile.openstreetmap.de/{z}/{x}/{y}.png",
             subdomains: ['a', 'b', 'c'],
             attributionBuilder: (_) {
               return const Text(
@@ -109,24 +115,24 @@ class _ForestMapState extends State<ForestMap> {
           MarkerLayerOptions(
             markers: [
               Marker(
-                point: LatLng(treeInfo.position.latitude,
-                    treeInfo.position.longitude),
+                point: LatLng(
+                    treeInfo.position.latitude, treeInfo.position.longitude),
                 builder: (ctx) => IconButton(
                     icon: const Icon(
                       Icons.location_on,
                       size: 30.0,
                     ),
                     onPressed: () => setState(() {
-                      treeInfoVisible = true;
-                    })
-                  // showDialog<String>(
-                  //     context: context,
-                  //     builder: (BuildContext context) {
-                  //       return const AlertDialog(
-                  //           content: TreeInformationWidget(
-                  //               title: "TreeInfoWidget"));
-                  //     }),
-                ),
+                          treeInfoVisible = true;
+                        })
+                    // showDialog<String>(
+                    //     context: context,
+                    //     builder: (BuildContext context) {
+                    //       return const AlertDialog(
+                    //           content: TreeInformationWidget(
+                    //               title: "TreeInfoWidget"));
+                    //     }),
+                    ),
               ),
             ],
           ),
@@ -149,18 +155,16 @@ class _ForestMapState extends State<ForestMap> {
           children: [
             shownMap,
             Align(
-                alignment: Alignment.centerLeft,
-                child: Visibility(
-                    key: const Key("TreeInfoVisibility"),
-                    visible: treeInfoVisible,
-                    child: Padding(
-                      padding: const EdgeInsets.all(10),
-                      child: TreeInformationWidget(
-                          model: treeInfo,
-                          onClosePressed: () => setState(() {
-                                treeInfoVisible = false;
-                              })),
-                    )))
+              alignment: Alignment.centerLeft,
+              child: Visibility(
+                key: const Key("TreeInfoVisibility"),
+                visible: treeInfoVisible,
+                child: Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: getTreeInformationWidget('tabs'),
+                ),
+              ),
+            ),
           ],
         ),
         floatingActionButton: Row(
@@ -198,6 +202,7 @@ class _ForestMapState extends State<ForestMap> {
         ),
       ),
       visible: widget.cookieManager.isAccepted(),
+
       /// Wird angezeigt, wenn visible nicht auf true gesetzt ist, und die Karte
       /// somit nicht angezeigt wird.
       replacement: ForestMapReplacement(
@@ -205,5 +210,28 @@ class _ForestMapState extends State<ForestMap> {
         cookieManager: widget.cookieManager,
       ),
     );
+  }
+
+  Widget getTreeInformationWidget(String type) {
+    switch (type.toLowerCase()) {
+      case 'tabs':
+        return TreeInformationWidgetTab(
+          model: treeInfo,
+          onClosePressed: () => setState(
+            () {
+              treeInfoVisible = false;
+            },
+          ),
+        );
+      default:
+        return TreeInformationWidget(
+          model: treeInfo,
+          onClosePressed: () => setState(
+            () {
+              treeInfoVisible = false;
+            },
+          ),
+        );
+    }
   }
 }

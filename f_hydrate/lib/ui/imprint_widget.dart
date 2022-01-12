@@ -2,6 +2,9 @@ import 'package:f_hydrate/ui/drawer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+/**
+ * StatefulWidget zur Anzeige des Impressums.
+ */
 class ImprintWidget extends StatefulWidget {
   const ImprintWidget({Key? key}) : super(key: key);
 

@@ -45,6 +45,8 @@ class _ForestMapState extends State<ForestMap> {
   double zoom = 13.0;
   /// Gibt an, ob das Pop-Up mit den Informationen über den Baum angezeigt werden soll
   bool treeInfoVisible = false;
+  /// Gibt an, ob die "Floating Action Buttons (FAB)" sichtbar sind
+  bool fabVisible = true;
   /// Die Informationen bezüglich des Baumes
   TreeInformation treeInfo = TreeInformation.createExample();
 
@@ -157,6 +159,9 @@ class _ForestMapState extends State<ForestMap> {
                     ),
                     onPressed: () => setState(() {
                           treeInfoVisible = true;
+                          fabVisible = MediaQuery.of(context).size.width > 500
+                              ? true
+                              : false;
                         })
                     ),
               ),
@@ -209,41 +214,43 @@ class _ForestMapState extends State<ForestMap> {
             ),
           ],
         ),
-
         /// Die Aktionen zum zentrieren und zum Anpassen des
         /// Zoom-Faktors
-        floatingActionButton: Row(
-          // https://www.youtube.com/watch?v=nvAh3ENt2Kk&t=98s
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: <Widget>[
-            FloatingActionButton(
-              heroTag: "btnCenter",
-              onPressed: () => _center(),
-              child: const Icon(
-                Icons.my_location,
+        floatingActionButton: Visibility(
+          visible: fabVisible,
+          child: Row(
+            // https://www.youtube.com/watch?v=nvAh3ENt2Kk&t=98s
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: <Widget>[
+              FloatingActionButton(
+                heroTag: "btnCenter",
+                onPressed: () => _center(),
+                child: const Icon(
+                  Icons.my_location,
+                ),
               ),
-            ),
-            const SizedBox(
-              width: 10,
-            ),
-            FloatingActionButton(
-              heroTag: "btnZoomOut",
-              onPressed: () => _zoom(-1),
-              child: const Icon(
-                Icons.zoom_out,
+              const SizedBox(
+                width: 10,
               ),
-            ),
-            const SizedBox(
-              width: 10,
-            ),
-            FloatingActionButton(
-              heroTag: "btnZoomIn",
-              onPressed: () => _zoom(1),
-              child: const Icon(
-                Icons.zoom_in,
+              FloatingActionButton(
+                heroTag: "btnZoomOut",
+                onPressed: () => _zoom(-1),
+                child: const Icon(
+                  Icons.zoom_out,
+                ),
               ),
-            ),
-          ],
+              const SizedBox(
+                width: 10,
+              ),
+              FloatingActionButton(
+                heroTag: "btnZoomIn",
+                onPressed: () => _zoom(1),
+                child: const Icon(
+                  Icons.zoom_in,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -264,6 +271,7 @@ class _ForestMapState extends State<ForestMap> {
           onClosePressed: () => setState(
             () {
               treeInfoVisible = false;
+              fabVisible = true;
             },
           ),
         );

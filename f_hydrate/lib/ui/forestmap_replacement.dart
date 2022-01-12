@@ -3,10 +3,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'drawer.dart';
 
-/// WIRD MOMENTAN NICHT VERWENDET, KANN BEUTZT WERDEN, FALLS COOKIES ABGELEHNT WERDEN DÜRFEN
-
-/// Das Widget, welches angezeigt werden soll, falls die Map auf datenschutz-technischen
-/// Gründen nicht angezeigt werden darf, wenn die Cookies nicht akzeptiert wurden.
+/**
+ * Widget, welches angezeigt werden soll, falls die Map auf
+ * datenschutz-technischen Gründen nicht angezeigt werden darf,
+ * wenn die Cookies nicht akzeptiert wurden.
+ */
 class ForestMapReplacement extends StatefulWidget {
   final CookieManager cookieManager;
 
@@ -60,7 +61,7 @@ class _ForestMapReplacement extends State<ForestMapReplacement> {
                       ),
 
                       /// Der Text zum erneuten Anzeigen des Banners soll nur angezeigt werden,
-                      /// falls die Cookies abgelehnt wurde und der Banner somit nicht mehr
+                      /// falls die Cookies abgelehnt wurden und der Banner somit nicht mehr
                       /// sichtbar ist
                       Visibility(
                         child: TextButton(

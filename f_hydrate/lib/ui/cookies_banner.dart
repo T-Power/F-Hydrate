@@ -1,8 +1,11 @@
 import 'package:f_hydrate/model/cookie_manager.dart';
 import 'package:flutter/material.dart';
 
-/// Ein Banner, welcher auf Cookie-Nutzung der Map hinweist und die Möglichkeit
-/// zum Akzeptieren oder zum Ablehnen anbietet.
+/**
+ * Ein Banner, welcher auf Cookie-Nutzung der Map hinweist
+ * und die Möglichkeit zum Akzeptieren oder zum Ablehnen anbietet.
+ * (Momentan ist die Option zum Ablehnen auskommentiert)
+ */
 class CookiesBanner extends StatefulWidget {
   final CookieManager cookieManager;
 

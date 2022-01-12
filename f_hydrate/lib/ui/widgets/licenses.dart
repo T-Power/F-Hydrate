@@ -3,18 +3,18 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+/**
+ * Erzeugt einen Lizenz-Dialog.
+ */
 class LicenseDialog {
+  /// Methode erzeugt einen Lizenz-Dialog in System-Sprache (nicht zwangsläufig die Sprache der Nutzeroberfläche).
   static void show(BuildContext context) {
+    /// Text (Link) zum Hervorheben.
     String pubDev = 'https://pub.dev/';
     showAboutDialog(
       context: context,
-      // applicationIcon: Container(
-      //     height: 25,
-      //     width: 25,
-      //     child: Image(
-      //       image: AssetImage('assets/icons/favicon.png'),
-      //     )),
-      // applicationIcon: FlutterLogo(),
+
+      /// In der oberen Ecke wird das Logo dargestellt.
       applicationIcon: ImageIcon(
         AssetImage('assets/icons/favicon.png'),
         semanticLabel:
@@ -24,6 +24,7 @@ class LicenseDialog {
       applicationVersion: '0.0.1',
       applicationLegalese: '©2021 FHydrate',
       children: <Widget>[
+        /// Text, der im Dialog angezeigt werden soll.
         RichText(
           text: TextSpan(
             style:
@@ -39,6 +40,8 @@ class LicenseDialog {
               TextSpan(
                   text:
                       'Im Folgenden finden Sie die Lizenzen aller verwendeten Softwarekomponenten. Für den Großteil der Softwarekomponenten finden Sie unter '),
+
+              /// Hervorheben und "klickbar-Machen" des Links.
               TextSpan(
                 text: pubDev,
                 style:

@@ -3,6 +3,11 @@ import 'package:f_hydrate/ui/widgets/tree_information_tabs.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+/**
+ * Erzeugt die Bauminformationen als Popup mit Tabs.
+ *
+ * Siehe auch [TreeInformationTab].
+ */
 class TreeInformationWidgetTab extends StatefulWidget {
   const TreeInformationWidgetTab(
       {Key? key, required this.model, this.onClosePressed})

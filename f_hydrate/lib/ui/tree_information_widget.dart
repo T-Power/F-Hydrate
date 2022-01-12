@@ -6,6 +6,11 @@ import 'package:flutter/material.dart';
 
 import 'popup_text_style.dart';
 
+/**
+ * Erzeugt die Bauminformationen in Popup mit einer scrollbaren Liste.
+ *
+ * Siehe auch [TreeInformationTab].
+ */
 class TreeInformationWidget extends StatefulWidget {
   const TreeInformationWidget(
       {Key? key, required this.model, this.onClosePressed})

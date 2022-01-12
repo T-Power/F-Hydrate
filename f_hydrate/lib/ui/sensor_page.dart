@@ -6,6 +6,11 @@ import 'package:f_hydrate/ui/drawer.dart';
 import 'package:f_hydrate/ui/widgets/gauge.dart';
 import 'package:flutter/material.dart';
 
+/**
+ * Stateful Widget zur Anzeige der Messwerte der Sensoren (ohne ergänzende Textinformationen).
+ *
+ * Siehe auch [TreeInformationTab].
+ */
 class SensorPage extends StatefulWidget {
   const SensorPage({required this.treeInfo, Key? key}) : super(key: key);
 
@@ -67,6 +72,7 @@ class _SensorPageState extends State<SensorPage> with TickerProviderStateMixin {
     );
   }
 
+  /// Erzeugt einen "Tacho" für jede Messeinheit.
   List<Widget> buildTabs(Sensor sensor) {
     return [
       Gauge(

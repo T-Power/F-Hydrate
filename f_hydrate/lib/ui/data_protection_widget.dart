@@ -3,6 +3,9 @@ import 'package:f_hydrate/ui/theme_manager.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+/**
+ * Stateful Widget zur Anzeige der Datenschutzbestimmungen.
+ */
 class DataProtectionWidget extends StatefulWidget {
   const DataProtectionWidget({Key? key}) : super(key: key);
 

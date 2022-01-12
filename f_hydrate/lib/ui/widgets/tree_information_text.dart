@@ -4,10 +4,14 @@ import 'package:flutter/material.dart';
 
 import '../popup_text_style.dart';
 
+/**
+ * Stateful Widget bildet die Informationen über einen Baum als Text ab.
+ */
 class TreeInformationTextWidget extends StatefulWidget {
   const TreeInformationTextWidget({Key? key, required this.model})
       : super(key: key);
 
+  /// Darzustellende Bauminformationen.
   final TreeInformation model;
 
   @override
@@ -15,8 +19,7 @@ class TreeInformationTextWidget extends StatefulWidget {
       TreeInformationTextWidgetState();
 }
 
-class TreeInformationTextWidgetState
-    extends State<TreeInformationTextWidget> {
+class TreeInformationTextWidgetState extends State<TreeInformationTextWidget> {
   @override
   void initState() {
     super.initState();
@@ -30,6 +33,7 @@ class TreeInformationTextWidgetState
     );
   }
 
+  /// Liefert die Textinformationen in Form einer scrollbaren ListView.
   ListView buildList() {
     return ListView(
         // mainAxisSize: MainAxisSize.min,
@@ -38,6 +42,7 @@ class TreeInformationTextWidgetState
         children: buildTreeInformation());
   }
 
+  /// Formatiert das Datum zu dd.mm.yyyy
   String getFormattedDate(DateTime date) {
     return date.day.toString() +
         "." +
@@ -46,6 +51,7 @@ class TreeInformationTextWidgetState
         date.year.toString();
   }
 
+  /// Baut eine Liste der Informationen in Textform.
   List<Widget> buildTreeInformation() {
     return [
       Text(
@@ -86,6 +92,7 @@ class TreeInformationTextWidgetState
     ];
   }
 
+  /// Erzeugt eine Zeile für Wertbezeichnung und Wert.
   Row createPropertyRow(String header, String value) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -102,6 +109,7 @@ class TreeInformationTextWidgetState
     );
   }
 
+  /// Erzeugt eine optische Abtrennung.
   Divider createDivider() {
     return Divider(color: Theme.of(context).textTheme.headline1!.color);
   }

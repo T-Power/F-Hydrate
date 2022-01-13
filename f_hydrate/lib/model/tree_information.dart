@@ -10,6 +10,17 @@ class TreeInformation {
   GeographicPosition position = const GeographicPosition(0, 0);
   Sensor sensor = Sensor();
 
+
+// factory TreeInformation.fromJson(Map<String, dynamic> json){
+//   return TreeInformation(
+//     id: json['id'],
+//     birthday : json['createdAt'],
+//     position = const GeographicPosition(json['latitude'], json['longitude']),
+    
+    
+//   )
+// }
+
   static TreeInformation createExample() {
     var tree = TreeInformation();
     tree.id = "tree_0123456";

@@ -10,6 +10,8 @@ import 'package:latlong2/latlong.dart';
 import 'drawer.dart';
 import 'forestmap_replacement.dart';
 
+import 'package:http/http.dart' as http;
+
 /// https://pub.dev/packages/flutter_map -> Dokumentation zu flutter_map
 /// Integration einer Map, basierend auf Open Street Map.
 class ForestMap extends StatefulWidget {
@@ -234,4 +236,9 @@ class _ForestMapState extends State<ForestMap> {
         );
     }
   }
+
+Future<http.Response> fetchTrees(){
+  return http.get(Uri.parse('https://fhydrate.fb4.fh-dortmund.de/api/v1/trees'));
+}
+
 }

@@ -60,10 +60,6 @@ class TreeInformationTextWidgetState extends State<TreeInformationTextWidget> {
       ),
       Text('ID: ${widget.model.id}'),
       const SizedBox(height: 20),
-      createPropertyRow(
-        "Name",
-        widget.model.name,
-      ),
       createDivider(),
       createPropertyRow(
         "Typ",

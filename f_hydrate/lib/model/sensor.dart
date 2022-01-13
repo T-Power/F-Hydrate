@@ -7,42 +7,45 @@ import 'package:f_hydrate/model/tree_information.dart';
  */
 class Sensor {
   /// Die Id des Sensors.
-  // String id;
-  /**/
+  String id = "";
 
   /// Eine sprechende Bezeichnung des Sensors, z. B. "Campus Emil-Figge-Straße, FB4".
   // String name;
   /**/
 
-  /// Die geographische Position (Längen- und Breitengrad).
-  // GeographicPosition location;
-  /**/
+  /// Akkuspannung des Sensors
+  double voltage = 1.0;
 
   /// Aktuelle Temperatur.
-  Temperature temperature;
+  Temperature temperature = const Temperature(0);
 
   /// Aktueller Wassergehalt der Erde.
-  VolumetricWaterContent volumetricWaterContent;
+  VolumetricWaterContent volumetricWaterContent =
+      const VolumetricWaterContent(0);
 
   /// Elektrische Leitfähigkeit der Erde.
-  ElectricalConductivity electricalConductivity;
+  ElectricalConductivity electricalConductivity =
+      const ElectricalConductivity(0);
 
   /// Salzgehalt der Erde.
-  Salinity salinity;
+  Salinity salinity = const Salinity(0);
 
   /// Im Bodem gelöste Stoffe.
-  TotalDissolvedSolids totalDissolvedSolids;
+  TotalDissolvedSolids totalDissolvedSolids = const TotalDissolvedSolids(0);
+
+  /// Zeitstempel der Messung
+  DateTime dateTime = DateTime.now();
 
   /// Biologische Informationen über den Baum (Art, Sollwerte, etc.).
-  BiologicalTreeType tree;
+  BiologicalTreeType tree = const BiologicalTreeType();
 
   /**
    * Ein Standardkonstruktor, der alle Werte mit 0 bzw. '' initialisiert.
    */
-  Sensor({
-    // this.id = '',
+  Sensor.standardValues({
+    this.id = '0',
     //   this.name = '',
-    // this.location = const GeographicPosition(0,0),
+    this.voltage = 1.0,
     this.temperature = const Temperature(0),
     this.volumetricWaterContent = const VolumetricWaterContent(0),
     this.electricalConductivity = const ElectricalConductivity(0),
@@ -52,10 +55,26 @@ class Sensor {
   });
 
   /**
+   * Konstruktor für die Klasse Sensor
+   */
+  Sensor({
+    required this.id,
+    //   this.name = '',
+    required this.voltage,
+    required this.temperature,
+    required this.volumetricWaterContent,
+    required this.electricalConductivity,
+    required this.salinity,
+    required this.totalDissolvedSolids,
+    required this.dateTime,
+    required this.tree,
+  });
+
+  /**
    * Named constructor, um einen Beispielsensor mit realistischen, statischen Daten zu erzeugen.
    */
   static Sensor createExample() {
-    Sensor s = Sensor();
+    Sensor s = Sensor.standardValues();
     s.temperature = const Temperature(20.5);
     s.volumetricWaterContent = const VolumetricWaterContent(75.5);
     s.salinity = const Salinity(10.67);
@@ -69,6 +88,8 @@ class Sensor {
    */
   static Sensor randomSensor() {
     return Sensor(
+      id: "1",
+      voltage: 2.3,
       // name: 'FH DO FB4',
       temperature: Temperature(
         Temperature.randomValue(),
@@ -85,6 +106,8 @@ class Sensor {
       totalDissolvedSolids: TotalDissolvedSolids(
         TotalDissolvedSolids.randomValue(),
       ),
+      dateTime: DateTime.now(),
+      tree: BiologicalTreeType.createExample()
     );
   }
 }

@@ -46,12 +46,14 @@ class TreeInformation {
 
   /// Named constructor, erzeugt einen Beispieldatensatz.
   static TreeInformation createExample() {
-    var tree = TreeInformation.createExample();
-    tree.id = "tree_0123456";
-    tree.type = BiologicalTreeType.createExample();
-    tree.position =
-        const GeographicPosition(51.494111843297155, 7.422219578674077);
-    tree.sensor = Sensor.randomSensor();
+    var tree = TreeInformation(
+    id: "tree_0123456",
+    birthday: DateTime.now(),
+    yougTree: true,
+    position: const GeographicPosition(51.494111843297155, 7.422219578674077),
+    sensor: Sensor.randomSensor(),
+    );
+    
     return tree;
   }
 }

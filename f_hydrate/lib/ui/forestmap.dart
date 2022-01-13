@@ -79,6 +79,7 @@ class _ForestMapState extends State<ForestMap> {
     widget.cookieManager.addListener(() {
       setState(() {
         /// Map wird nur initialisiert, wenn Cookies akzeptiert wurden
+        
         initMap();
       });
     });
@@ -138,7 +139,7 @@ class _ForestMapState extends State<ForestMap> {
             return getMap(snapshot.data!);
           }
           else{
-            return Container();
+            return Center(child: Text("Cannot load Map."),);
           }
         }
         );
@@ -264,8 +265,7 @@ class _ForestMapState extends State<ForestMap> {
   }
 
   Future<List<TreeInformation>> fetchTrees() async {
-    final response = await http
-        .get(Uri.parse('https://fhydrate.fb4.fh-dortmund.de/api/v1/trees'));
+    final response = await http.get(Uri.parse('https://fhydrate.fb4.fh-dortmund.de/api/v1/trees'));
 
     if (response.statusCode == 200) {
       var jsonObj = jsonDecode(response.body);

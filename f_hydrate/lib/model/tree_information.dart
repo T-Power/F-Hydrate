@@ -37,7 +37,7 @@ class TreeInformation {
         yougTree: json['youngTree'],
         sensor: Sensor(
             id: json['latestMeasurement']['id'],
-            voltage: json['latestMeasurement']['voltage'],
+            voltage: Voltage(json['latestMeasurement']['voltage']),
             temperature: Temperature(json['latestMeasurement']['temperature']),
             volumetricWaterContent:
                 VolumetricWaterContent(json['latestMeasurement']['vwc']),

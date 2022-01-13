@@ -151,8 +151,8 @@ class TreeInformationWidgetState extends State<TreeInformationWidget> {
       const SizedBox(height: 20),
       createDivider(),
       createPropertyRow(
-        "Typ",
-        widget.model.type.name,
+        "Akkuspannung",
+        widget.model.sensor.voltage.toString(),
       ),
       createDivider(),
       createPropertyRow(

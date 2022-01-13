@@ -14,7 +14,7 @@ class Sensor {
   /**/
 
   /// Akkuspannung des Sensors
-  double voltage = 1.0;
+  Voltage voltage = const Voltage(0);
 
   /// Aktuelle Temperatur.
   Temperature temperature = const Temperature(0);
@@ -45,7 +45,7 @@ class Sensor {
   Sensor.standardValues({
     this.id = 1,
     //   this.name = '',
-    this.voltage = 1.0,
+    this.voltage = const Voltage(0),
     this.temperature = const Temperature(0),
     this.volumetricWaterContent = const VolumetricWaterContent(0),
     this.electricalConductivity = const ElectricalConductivity(0),
@@ -89,7 +89,7 @@ class Sensor {
   static Sensor randomSensor() {
     return Sensor(
         id: 0,
-        voltage: 2.3,
+        voltage: Voltage.random(),
         // name: 'FH DO FB4',
         temperature: Temperature(
           Temperature.randomValue(),
@@ -327,6 +327,31 @@ class TotalDissolvedSolids {
   /// Erzeugt ein zufälliges gelöste Stoffe-Objekt.
   static TotalDissolvedSolids random() {
     return TotalDissolvedSolids(randomValue());
+  }
+}
+
+class Voltage {
+  /// Der aktuelle Wert als Fließkommazahl.
+  final num value;
+
+  /// Multiplikator zur Umrechnung in einen logischen Wert.
+  final num multiplier = 1;
+
+  /// Die Einheit, in der die gelösten Stoffe gemessen werden.
+  final String unit = "V";
+
+  /// Konstruktor zur Erzeugung eines gelöste Stoffe-Objekts.
+  const Voltage(this.value);
+
+  /// Methode, um den aktuellen Wert als String mit 1 Nachkommastelle und Einheit auszugeben.
+  @override
+  String toString() {
+    return (value * multiplier).toStringAsFixed(1) + " " + unit;
+  }
+
+  /// Erzeugt ein zufälliges gelöste Stoffe-Objekt.
+  static Voltage random() {
+    return Voltage(1.1);
   }
 }
 

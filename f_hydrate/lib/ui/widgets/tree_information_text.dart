@@ -51,24 +51,34 @@ class TreeInformationTextWidgetState extends State<TreeInformationTextWidget> {
         date.year.toString();
   }
 
+  /// Formatiert das Datum zu dd.mm.yyyy
+  String getFormattedDateTime(DateTime date) {
+    return date.day.toString() +
+        "." +
+        date.month.toString() +
+        "." +
+        date.year.toString() +
+        " " +
+        date.hour.toString() +
+        ":" +
+        date.minute.toString();
+  }
+
   /// Baut eine Liste der Informationen in Textform.
   List<Widget> buildTreeInformation() {
     return [
-      Text(
-        "Bauminformationen",
-        style: Theme.of(context).textTheme.headline5,
-      ),
       Text('ID: ${widget.model.id}'),
       const SizedBox(height: 20),
-      createDivider(),
-      createPropertyRow(
-        "Typ",
-        widget.model.type.name,
-      ),
-      createDivider(),
       createPropertyRow(
         "Pflanzdatum",
         getFormattedDate(widget.model.birthday),
+      ),
+      createDivider(),
+      createPropertyRow("Akkuspannung", widget.model.sensor.voltage.toString()),
+      createDivider(),
+      createPropertyRow(
+        "Wassergehalt",
+        widget.model.sensor.volumetricWaterContent.toString(),
       ),
       createDivider(),
       createPropertyRow(
@@ -77,14 +87,24 @@ class TreeInformationTextWidgetState extends State<TreeInformationTextWidget> {
       ),
       createDivider(),
       createPropertyRow(
-        "Wassergehalt",
-        widget.model.sensor.volumetricWaterContent.toString(),
+        "Leitfähigkeit",
+        widget.model.sensor.electricalConductivity.toString(),
       ),
       createDivider(),
       createPropertyRow(
         "Salzgehalt",
         widget.model.sensor.salinity.toString(),
       ),
+      createDivider(),
+      createPropertyRow(
+        "Abdampfrückstand",
+        widget.model.sensor.totalDissolvedSolids.toString(),
+      ),
+      createDivider(),
+      createPropertyRow(
+        "Zeitstempel",
+        getFormattedDateTime(widget.model.sensor.dateTime),
+      )
     ];
   }
 

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:f_hydrate/model/cookie_manager.dart';
 import 'package:f_hydrate/model/tree_information.dart';
 import 'package:f_hydrate/ui/tree_information_widget.dart';
@@ -11,7 +13,6 @@ import 'drawer.dart';
 import 'forestmap_replacement.dart';
 
 import 'package:http/http.dart' as http;
-
 
 /**
  * Klasse, welche eine Map integriert und auf Open Street Map basiert.
@@ -46,21 +47,28 @@ class _ForestMapState extends State<ForestMap> {
 
   /// Der initiale Zoom
   double zoom = 13.0;
+
   /// Gibt an, ob das Pop-Up mit den Informationen über den Baum angezeigt werden soll
   bool treeInfoVisible = false;
+
   /// Gibt an, ob die "Floating Action Buttons (FAB)" sichtbar sind
   bool fabVisible = true;
+
   /// Die Informationen bezüglich des Baumes
   TreeInformation treeInfo = TreeInformation.createExample();
 
   /// Die initialen Koordinaten sind Dortmunds Koordinaten
   LatLng center = LatLng(51.5135872, 7.4652981);
+
   /// MapController, um die Karte steuern zu können
   MapController mapController = MapController();
+
+  late Future<List<TreeInformation>> futureTreeInformation;
 
   @override
   void initState() {
     super.initState();
+    futureTreeInformation = fetchTrees();
 
     /// Wenn der MapController noch nicht bereit ist, kann es an verschiedenen Stellen
     /// zu Schwierigkeiten kommen, deswegen wird mit einer entsprechenden Variable
@@ -122,56 +130,19 @@ class _ForestMapState extends State<ForestMap> {
    */
   void initMap() {
     if (widget.cookieManager.isAccepted()) {
-      shownMap = FlutterMap(
-        mapController: mapController,
-        options: MapOptions(
-          center: center,
-          zoom: zoom,
 
-          /// Bei größerem/kleinerem Zoom würde nur grauer Bildschirm angezeigt
-          maxZoom: 18,
-          minZoom: 2,
-
-          /// Wenn die Flags nicht eingeschränkt würden, ließe sich der Bildschirm
-          /// am Handy rotieren, was leicht irritierend sein kann, falls Norden
-          /// plötzlich nicht mehr oben vom Bildschirm ist.
-          interactiveFlags: InteractiveFlag.pinchZoom | InteractiveFlag.drag,
-        ),
-        layers: [
-          /// Konfiguration der Karte
-          TileLayerOptions(
-            urlTemplate: "https://{s}.tile.openstreetmap.de/{z}/{x}/{y}.png",
-            subdomains: ['a', 'b', 'c'],
-            attributionBuilder: (_) {
-              return const Text(
-                "© OpenStreetMap contributors",
-                style: TextStyle(backgroundColor: Colors.white),
-              );
-            },
-          ),
-          /// Konfiguration der angezeigten Bäume
-          MarkerLayerOptions(
-            markers: [
-              Marker(
-                point: LatLng(
-                    treeInfo.position.latitude, treeInfo.position.longitude),
-                builder: (ctx) => IconButton(
-                    icon: const Icon(
-                      Icons.location_on,
-                      size: 30.0,
-                    ),
-                    onPressed: () => setState(() {
-                          treeInfoVisible = true;
-                          fabVisible = MediaQuery.of(context).size.width > 500
-                              ? true
-                              : false;
-                        })
-                    ),
-              ),
-            ],
-          ),
-        ],
-      );
+      shownMap = FutureBuilder<List<TreeInformation>>(
+        future: futureTreeInformation,
+        builder: (context, snapshot){
+          if(snapshot.hasData){
+            return getMap(snapshot.data!);
+          }
+          else{
+            return Container();
+          }
+        }
+        );
+        
     } else {
       /// Wenn die Cookies nicht akzeptiert wurden wird die Map nicht
       /// initialisiert
@@ -203,6 +174,7 @@ class _ForestMapState extends State<ForestMap> {
           children: [
             /// Die an anderer Stelle initialisierte Karte
             shownMap,
+
             /// Das Pop-Up mit den Bauminformationen
             Align(
               alignment: Alignment.centerLeft,
@@ -217,6 +189,7 @@ class _ForestMapState extends State<ForestMap> {
             ),
           ],
         ),
+
         /// Die Aktionen zum zentrieren und zum Anpassen des
         /// Zoom-Faktors
         floatingActionButton: Visibility(
@@ -290,9 +263,85 @@ class _ForestMapState extends State<ForestMap> {
     }
   }
 
-Future<http.Response> fetchTrees(){
-  return http.get(Uri.parse('https://fhydrate.fb4.fh-dortmund.de/api/v1/trees'));
-}
+  Future<List<TreeInformation>> fetchTrees() async {
+    final response = await http
+        .get(Uri.parse('https://fhydrate.fb4.fh-dortmund.de/api/v1/trees'));
+
+    if (response.statusCode == 200) {
+      var jsonObj = jsonDecode(response.body);
+      List<dynamic> trees = jsonObj['_embedded']['trees'];
+      List<TreeInformation> treeInfos = [];
+
+      trees.forEach((tree) {
+        treeInfos.add(TreeInformation.fromJson(tree));
+      });
+
+      return treeInfos;
+    } else {
+      throw Exception('Failed to load trees.');
+    }
+  }
+
+
+  FlutterMap getMap(List<TreeInformation> treeInfos){
+    return FlutterMap(
+    mapController: mapController,
+        options: MapOptions(
+          center: center,
+          zoom: zoom,
+
+          /// Bei größerem/kleinerem Zoom würde nur grauer Bildschirm angezeigt
+          maxZoom: 18,
+          minZoom: 2,
+
+          /// Wenn die Flags nicht eingeschränkt würden, ließe sich der Bildschirm
+          /// am Handy rotieren, was leicht irritierend sein kann, falls Norden
+          /// plötzlich nicht mehr oben vom Bildschirm ist.
+          interactiveFlags: InteractiveFlag.pinchZoom | InteractiveFlag.drag,
+        ),
+        layers: [
+          /// Konfiguration der Karte
+          TileLayerOptions(
+            urlTemplate: "https://{s}.tile.openstreetmap.de/{z}/{x}/{y}.png",
+            subdomains: ['a', 'b', 'c'],
+            attributionBuilder: (_) {
+              return const Text(
+                "© OpenStreetMap contributors",
+                style: TextStyle(backgroundColor: Colors.white),
+              );
+            },
+          ),
+
+          /// Konfiguration der angezeigten Bäume
+          MarkerLayerOptions(
+            markers: getMarkers(treeInfos),
+          ),
+        ],
+      );
+  }
+
+
+  List<Marker> getMarkers(List<TreeInformation> treeInfos){
+    List<Marker> markers = [];
+    treeInfos.forEach((tree) {
+      markers.add(
+        Marker(
+                point: LatLng(treeInfo.position.latitude, treeInfo.position.longitude),
+                builder: (ctx) => IconButton(
+                    icon: const Icon(Icons.location_on, size: 30.0,),
+                    onPressed: () => setState(() {
+                          treeInfoVisible = true;
+                          fabVisible = MediaQuery.of(context).size.width > 500;
+                        })),
+              )
+      );
+    });
+    
+
+  return markers;
+
+  }
+
 
 
 

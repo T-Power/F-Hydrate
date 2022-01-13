@@ -1,13 +1,13 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:html';
+//import 'dart:html';
 //import 'dart:js';
 
 import 'package:f_hydrate/model/cookie_manager.dart';
 import 'package:f_hydrate/model/tree_information.dart';
 import 'package:f_hydrate/ui/tree_information_widget.dart';
 import 'package:f_hydrate/ui/tree_information_widget_with_tabs.dart';
-import 'package:flutter/cupertino.dart';
+//import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
@@ -62,7 +62,7 @@ class _ForestMapState extends State<ForestMap> {
 
   /// Die initialen Koordinaten sind Dortmunds Koordinaten
   //LatLng center = LatLng(51.5135872, 7.4652981);
-  LatLng center = LatLng(1.0,1.0);
+  LatLng center = LatLng(1.0, 1.0);
 
   /// MapController, um die Karte steuern zu können
   MapController mapController = MapController();
@@ -78,7 +78,6 @@ class _ForestMapState extends State<ForestMap> {
     futureString = fetchTreeString();
     futureTreeInformation = fetchTrees();
     futureAlbum = fetchResponse();
-
 
     /// Wenn der MapController noch nicht bereit ist, kann es an verschiedenen Stellen
     /// zu Schwierigkeiten kommen, deswegen wird mit einer entsprechenden Variable
@@ -160,7 +159,7 @@ class _ForestMapState extends State<ForestMap> {
   @override
   Widget build(BuildContext context) {
     // return Center(child: FutureBuilder<http.Response>(
-    //   future: futureAlbum, 
+    //   future: futureAlbum,
     //   builder: (context, snapshot) {
     //     if(snapshot.hasData){
     //       return Text(snapshot.data!.body);
@@ -169,8 +168,7 @@ class _ForestMapState extends State<ForestMap> {
     //       return Text("No data loaded");
     //     }
     // },),);
-    
-    
+
     return Visibility(
       /// Die Karte wird nur angezeigt, falls die Cookies akzeptiert
       /// wurden
@@ -282,28 +280,25 @@ class _ForestMapState extends State<ForestMap> {
     }
   }
 
-
   Future<String> fetchTreeString() async {
-    final response = await http.get(Uri.parse('https://fhydrate.fb4.fh-dortmund.de/api/v1/trees'), 
-    // headers: {
-    //   "Accept": "application/json",
-    //   "Access-Control-Allow-Origin": "*"
-    // }
+    final response = await http.get(
+      Uri.parse('https://fhydrate.fb4.fh-dortmund.de/api/v1/trees'),
+      // headers: {
+      //   "Accept": "application/json",
+      //   "Access-Control-Allow-Origin": "*"
+      // }
     );
-    
+
     if (response.statusCode == 200) {
       return response.body;
-    }
-    else{
+    } else {
       return "Nothing";
     }
   }
 
-
   Future<http.Response> fetchResponse() async {
     return http.get(Uri.parse('https://jsonplaceholder.typicode.com/albums/1'));
   }
-
 
   Future<List<TreeInformation>> fetchTrees() async {
     print("--------------test");
@@ -372,13 +367,14 @@ class _ForestMapState extends State<ForestMap> {
     List<Marker> markers = [];
     treeInfos.forEach((tree) {
       markers.add(Marker(
-        point: LatLng(treeInfo.position.latitude, treeInfo.position.longitude),
+        point: LatLng(tree.position.latitude, tree.position.longitude),
         builder: (ctx) => IconButton(
             icon: const Icon(
               Icons.location_on,
               size: 30.0,
             ),
             onPressed: () => setState(() {
+                  treeInfo = tree;
                   treeInfoVisible = true;
                   fabVisible = MediaQuery.of(context).size.width > 500;
                 })),

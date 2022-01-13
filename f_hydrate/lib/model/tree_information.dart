@@ -32,7 +32,7 @@ class TreeInformation {
   factory TreeInformation.fromJson(Map<String, dynamic> json) {
     return TreeInformation(
         id: json['id'],
-        birthday: DateTime.now(),
+        birthday: DateTime.parse(json['plantedDate']),
         position: GeographicPosition(json['latitude'], json['longitude']),
         yougTree: json['youngTree'],
         sensor: Sensor(
@@ -46,7 +46,7 @@ class TreeInformation {
             salinity: Salinity(json['latestMeasurement']['salinity']),
             totalDissolvedSolids:
                 TotalDissolvedSolids(json['latestMeasurement']['tds']),
-            dateTime: DateTime.now(),
+            dateTime: DateTime.parse(json['latestMeasurement']['dateTime']),
             tree: BiologicalTreeType()));
   }
 

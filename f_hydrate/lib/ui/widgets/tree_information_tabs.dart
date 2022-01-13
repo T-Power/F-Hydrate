@@ -47,7 +47,7 @@ class _TreeInformationTabState extends State<TreeInformationTab>
       appBar: AppBar(
         title: Text(
             // sensor.name,
-            widget.treeInfo.name),
+            "Es gibt keinen Namen mehr"),
         bottom: TabBar(
           indicatorColor: Theme.of(context).colorScheme.secondary,
           labelColor: Theme.of(context).colorScheme.secondary,

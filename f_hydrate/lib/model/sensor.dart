@@ -7,7 +7,7 @@ import 'package:f_hydrate/model/tree_information.dart';
  */
 class Sensor {
   /// Die Id des Sensors.
-  String id = "";
+  int id = 0;
 
   /// Eine sprechende Bezeichnung des Sensors, z. B. "Campus Emil-Figge-Straße, FB4".
   // String name;
@@ -43,7 +43,7 @@ class Sensor {
    * Ein Standardkonstruktor, der alle Werte mit 0 bzw. '' initialisiert.
    */
   Sensor.standardValues({
-    this.id = '0',
+    this.id = 1,
     //   this.name = '',
     this.voltage = 1.0,
     this.temperature = const Temperature(0),
@@ -88,7 +88,7 @@ class Sensor {
    */
   static Sensor randomSensor() {
     return Sensor(
-        id: "1",
+        id: 0,
         voltage: 2.3,
         // name: 'FH DO FB4',
         temperature: Temperature(

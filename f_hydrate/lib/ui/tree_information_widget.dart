@@ -147,10 +147,6 @@ class TreeInformationWidgetState extends State<TreeInformationWidget> {
 
   List<Widget> buildTreeInformation() {
     return [
-      Text(
-        "Bauminformationen",
-        style: Theme.of(context).textTheme.headline5,
-      ),
       Text('ID: ${widget.model.id}'),
       const SizedBox(height: 20),
       createDivider(),

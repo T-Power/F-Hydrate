@@ -9,7 +9,7 @@ import 'package:intl/intl.dart';
  */
 class TreeInformation {
   /// Die ID des Baumes.
-  String id = "";
+  int id = 0;
 
   /// Das Pflanzdatum des Baumes.
   DateTime birthday = DateTime.now();
@@ -33,19 +33,19 @@ class TreeInformation {
     return TreeInformation(
         id: json['id'],
         birthday: DateTime.now(),
-        position: GeographicPosition(
-            double.parse(json['latitude']), double.parse(json['longitude'])),
-        yougTree: json['youngTree'].toLowerCase() == 'true',
+        position: GeographicPosition(json['latitude'], json['longitude']),
+        yougTree: json['youngTree'],
         sensor: Sensor(
             id: json['latestMeasurement']['id'],
-            voltage: double.parse(json['voltage']),
-            temperature: Temperature(num.parse(json['temperature'])),
+            voltage: json['latestMeasurement']['voltage'],
+            temperature: Temperature(json['latestMeasurement']['temperature']),
             volumetricWaterContent:
-                VolumetricWaterContent(num.parse(json['vwc'])),
+                VolumetricWaterContent(json['latestMeasurement']['vwc']),
             electricalConductivity:
-                ElectricalConductivity(num.parse(json['ec'])),
-            salinity: Salinity(num.parse(json['salinity'])),
-            totalDissolvedSolids: TotalDissolvedSolids(num.parse(json['tds'])),
+                ElectricalConductivity(json['latestMeasurement']['ec']),
+            salinity: Salinity(json['latestMeasurement']['salinity']),
+            totalDissolvedSolids:
+                TotalDissolvedSolids(json['latestMeasurement']['tds']),
             dateTime: DateTime.now(),
             tree: BiologicalTreeType()));
   }
@@ -60,13 +60,13 @@ class TreeInformation {
   /// Named constructor, erzeugt einen Beispieldatensatz.
   static TreeInformation createExample() {
     var tree = TreeInformation(
-    id: "tree_0123456",
-    birthday: DateTime.now(),
-    yougTree: true,
-    position: const GeographicPosition(51.494111843297155, 7.422219578674077),
-    sensor: Sensor.randomSensor(),
+      id: 1,
+      birthday: DateTime.now(),
+      yougTree: true,
+      position: const GeographicPosition(51.494111843297155, 7.422219578674077),
+      sensor: Sensor.randomSensor(),
     );
-    
+
     return tree;
   }
 }

@@ -1,6 +1,7 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:html';
-import 'dart:js';
+//import 'dart:js';
 
 import 'package:f_hydrate/model/cookie_manager.dart';
 import 'package:f_hydrate/model/tree_information.dart';
@@ -88,7 +89,7 @@ class _ForestMapState extends State<ForestMap> {
     widget.cookieManager.addListener(() {
       setState(() {
         /// Map wird nur initialisiert, wenn Cookies akzeptiert wurden
-        
+
         initMap();
       });
     });
@@ -140,19 +141,15 @@ class _ForestMapState extends State<ForestMap> {
    */
   void initMap() {
     if (widget.cookieManager.isAccepted()) {
-
-      shownMap = FutureBuilder<String>(
-        future: futureString,
-        builder: (context, snapshot){
-          if(snapshot.hasData){
-            return Center(child: Text(snapshot.data!)); //getMap(snapshot.data!);
-          }
-          else{
-            return Center(child: Text("Cannot load Map."),);
-          }
-        }
-        );
-        
+      shownMap = FutureBuilder<List<TreeInformation>>(
+          future: futureTreeInformation,
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              return getMap(snapshot.data!);
+            } else {
+              return Center(child: Text("Cannot load Map."));
+            }
+          });
     } else {
       /// Wenn die Cookies nicht akzeptiert wurden wird die Map nicht
       /// initialisiert
@@ -309,7 +306,15 @@ class _ForestMapState extends State<ForestMap> {
 
 
   Future<List<TreeInformation>> fetchTrees() async {
-    final response = await http.get(Uri.parse('https://fhydrate.fb4.fh-dortmund.de/api/v1/trees'));
+    print("--------------test");
+
+    final response = await http
+        .get(Uri.parse('https://fhydrate.fb4.fh-dortmund.de/api/v1/trees'));
+    /*final response = await http
+        .get(Uri.parse('https://jsonplaceholder.typicode.com/albums/1'));*/
+
+    print(response.body);
+    print("--------------test2");
 
     if (response.statusCode == 200) {
       var jsonObj = jsonDecode(response.body);
@@ -326,67 +331,60 @@ class _ForestMapState extends State<ForestMap> {
     }
   }
 
+  FlutterMap getMap(List<TreeInformation> treeInfos) {
+    return FlutterMap(
+      mapController: mapController,
+      options: MapOptions(
+        center: center,
+        zoom: zoom,
 
-  // FlutterMap getMap(List<TreeInformation> treeInfos){
-  //   return FlutterMap(
-  //   mapController: mapController,
-  //       options: MapOptions(
-  //         center: center,
-  //         zoom: zoom,
+        /// Bei größerem/kleinerem Zoom würde nur grauer Bildschirm angezeigt
+        maxZoom: 18,
+        minZoom: 2,
 
-  //         /// Bei größerem/kleinerem Zoom würde nur grauer Bildschirm angezeigt
-  //         maxZoom: 18,
-  //         minZoom: 2,
+        /// Wenn die Flags nicht eingeschränkt würden, ließe sich der Bildschirm
+        /// am Handy rotieren, was leicht irritierend sein kann, falls Norden
+        /// plötzlich nicht mehr oben vom Bildschirm ist.
+        interactiveFlags: InteractiveFlag.pinchZoom | InteractiveFlag.drag,
+      ),
+      layers: [
+        /// Konfiguration der Karte
+        TileLayerOptions(
+          urlTemplate: "https://{s}.tile.openstreetmap.de/{z}/{x}/{y}.png",
+          subdomains: ['a', 'b', 'c'],
+          attributionBuilder: (_) {
+            return const Text(
+              "© OpenStreetMap contributors",
+              style: TextStyle(backgroundColor: Colors.white),
+            );
+          },
+        ),
 
-  //         /// Wenn die Flags nicht eingeschränkt würden, ließe sich der Bildschirm
-  //         /// am Handy rotieren, was leicht irritierend sein kann, falls Norden
-  //         /// plötzlich nicht mehr oben vom Bildschirm ist.
-  //         interactiveFlags: InteractiveFlag.pinchZoom | InteractiveFlag.drag,
-  //       ),
-  //       layers: [
-  //         /// Konfiguration der Karte
-  //         TileLayerOptions(
-  //           urlTemplate: "https://{s}.tile.openstreetmap.de/{z}/{x}/{y}.png",
-  //           subdomains: ['a', 'b', 'c'],
-  //           attributionBuilder: (_) {
-  //             return const Text(
-  //               "© OpenStreetMap contributors",
-  //               style: TextStyle(backgroundColor: Colors.white),
-  //             );
-  //           },
-  //         ),
+        /// Konfiguration der angezeigten Bäume
+        MarkerLayerOptions(
+          markers: getMarkers(treeInfos),
+        ),
+      ],
+    );
+  }
 
-  //         /// Konfiguration der angezeigten Bäume
-  //         MarkerLayerOptions(
-  //           markers: getMarkers(treeInfos),
-  //         ),
-  //       ],
-  //     );
-  // }
+  List<Marker> getMarkers(List<TreeInformation> treeInfos) {
+    List<Marker> markers = [];
+    treeInfos.forEach((tree) {
+      markers.add(Marker(
+        point: LatLng(treeInfo.position.latitude, treeInfo.position.longitude),
+        builder: (ctx) => IconButton(
+            icon: const Icon(
+              Icons.location_on,
+              size: 30.0,
+            ),
+            onPressed: () => setState(() {
+                  treeInfoVisible = true;
+                  fabVisible = MediaQuery.of(context).size.width > 500;
+                })),
+      ));
+    });
 
-
-  // List<Marker> getMarkers(List<TreeInformation> treeInfos){
-  //   List<Marker> markers = [];
-  //   treeInfos.forEach((tree) {
-  //     markers.add(
-  //       Marker(
-  //               point: LatLng(treeInfo.position.latitude, treeInfo.position.longitude),
-  //               builder: (ctx) => IconButton(
-  //                   icon: const Icon(Icons.location_on, size: 30.0,),
-  //                   onPressed: () => setState(() {
-  //                         treeInfoVisible = true;
-  //                         fabVisible = MediaQuery.of(context).size.width > 500;
-  //                       })),
-  //             )
-  //     );
-  //   });
-    
-
-  // return markers;
-
-  // }
-
-
-
-
+    return markers;
+  }
 }

@@ -11,7 +11,11 @@ import 'package:flutter/painting.dart';
 import 'cookies_banner.dart';
 import 'imprint_widget.dart';
 
+/**
+ * Klasse zum Erzeugen einer Drawer-Navigation.
+ */
 class DrawerBuilder {
+  /// Erzeugt eine Drawer-Navigation.
   static Widget build(BuildContext context) {
     final CookieManager cookieManager = CookieManager();
     return Drawer(

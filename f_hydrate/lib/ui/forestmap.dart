@@ -12,14 +12,28 @@ import 'forestmap_replacement.dart';
 
 import 'package:http/http.dart' as http;
 
-/// https://pub.dev/packages/flutter_map -> Dokumentation zu flutter_map
-/// Integration einer Map, basierend auf Open Street Map.
-class ForestMap extends StatefulWidget {
-  final CookieManager cookieManager;
 
+/**
+ * Klasse, welche eine Map integriert und auf Open Street Map basiert.
+ * Als package für die Karte wurde flutter_map genutzt
+ * (https://pub.dev/packages/flutter_map).
+ */
+class ForestMap extends StatefulWidget {
+  /**
+   * Konstruktor der Klasse ForestMap.
+   * Die übergebene CookieManager-Klasse kann genutzt werden,
+   * um die Karte nur zu laden, falls die Nutzenden die
+   * Cookies akzeptieren.
+   * (Momentan ist die Funktion zum Ablehnen von Cookies
+   * jedoch deaktiviert)
+   *
+   * @param  title         Der Titel der Klasse
+   * @param  cookieManager Ein Objekt der CookieManager-Klasse
+   */
   const ForestMap({Key? key, required this.title, required this.cookieManager})
       : super(key: key);
 
+  final CookieManager cookieManager;
   final String title;
 
   @override
@@ -27,15 +41,21 @@ class ForestMap extends StatefulWidget {
 }
 
 class _ForestMapState extends State<ForestMap> {
+  /// Enthält Informationen darüber, ob der MapController bereit ist
   bool controllerReady = false;
 
   /// Der initiale Zoom
   double zoom = 13.0;
+  /// Gibt an, ob das Pop-Up mit den Informationen über den Baum angezeigt werden soll
   bool treeInfoVisible = false;
+  /// Gibt an, ob die "Floating Action Buttons (FAB)" sichtbar sind
+  bool fabVisible = true;
+  /// Die Informationen bezüglich des Baumes
   TreeInformation treeInfo = TreeInformation.createExample();
 
   /// Die initialen Koordinaten sind Dortmunds Koordinaten
   LatLng center = LatLng(51.5135872, 7.4652981);
+  /// MapController, um die Karte steuern zu können
   MapController mapController = MapController();
 
   @override
@@ -43,7 +63,8 @@ class _ForestMapState extends State<ForestMap> {
     super.initState();
 
     /// Wenn der MapController noch nicht bereit ist, kann es an verschiedenen Stellen
-    /// zu Schwierigkeiten kommen
+    /// zu Schwierigkeiten kommen, deswegen wird mit einer entsprechenden Variable
+    /// zum prüfen gearbeitet
     mapController.onReady.then((_) => controllerReady = true);
 
     /// Listener um bei Änderungen an den Cookie-Informationen benachrichtigt zu werden
@@ -55,6 +76,8 @@ class _ForestMapState extends State<ForestMap> {
     });
 
     /// AUSKOMMENTIEREN, FALLS COOKIES ABGELEHNT WERDEN DÜRFEN
+    /// Macht die Karte sichtbar, auch wenn die Cookies nicht akzeptiert wurden.
+    /// Wenn der Code auskommentiert wird, wird die Karte initial nicht angezeigt.
     if (!widget.cookieManager.isAccepted()) {
       widget.cookieManager.setAcceptedAndVisible(true, true);
     }
@@ -69,6 +92,11 @@ class _ForestMapState extends State<ForestMap> {
     initMap();
   }
 
+  /**
+   * Funktion um den Zoom-Faktor zu ändern.
+   *
+   * @param  value Der Faktor um welche sich der Zoom erhöht bzw. verringert
+   */
   void _zoom(double value) {
     if (controllerReady) {
       double newValue = mapController.zoom + value;
@@ -76,6 +104,9 @@ class _ForestMapState extends State<ForestMap> {
     }
   }
 
+  /**
+   * Funktion um den Center der Karte zu ändern.
+   */
   void _center() {
     if (controllerReady) {
       mapController.move(center, mapController.zoom);
@@ -85,8 +116,10 @@ class _ForestMapState extends State<ForestMap> {
   /// Die Map wird gar nicht initialisiert, solange die Cookies nicht akzeptiert wurden
   Widget shownMap = Container();
 
-  /// Die Initialisierung der Map wurde hierhin ausgelagert
-  /// und an eine entsprechende Bedingung geknüpft
+  /**
+   * Funktion zum Initialisieren der Map.
+   * Die Map wird nur initialisiert, falls die Cookies akzeptiert wurden.
+   */
   void initMap() {
     if (widget.cookieManager.isAccepted()) {
       shownMap = FlutterMap(
@@ -100,10 +133,12 @@ class _ForestMapState extends State<ForestMap> {
           minZoom: 2,
 
           /// Wenn die Flags nicht eingeschränkt würden, ließe sich der Bildschirm
-          /// am Handy rotieren, was leicht irritierend ist.
+          /// am Handy rotieren, was leicht irritierend sein kann, falls Norden
+          /// plötzlich nicht mehr oben vom Bildschirm ist.
           interactiveFlags: InteractiveFlag.pinchZoom | InteractiveFlag.drag,
         ),
         layers: [
+          /// Konfiguration der Karte
           TileLayerOptions(
             urlTemplate: "https://{s}.tile.openstreetmap.de/{z}/{x}/{y}.png",
             subdomains: ['a', 'b', 'c'],
@@ -114,6 +149,7 @@ class _ForestMapState extends State<ForestMap> {
               );
             },
           ),
+          /// Konfiguration der angezeigten Bäume
           MarkerLayerOptions(
             markers: [
               Marker(
@@ -126,14 +162,10 @@ class _ForestMapState extends State<ForestMap> {
                     ),
                     onPressed: () => setState(() {
                           treeInfoVisible = true;
+                          fabVisible = MediaQuery.of(context).size.width > 500
+                              ? true
+                              : false;
                         })
-                    // showDialog<String>(
-                    //     context: context,
-                    //     builder: (BuildContext context) {
-                    //       return const AlertDialog(
-                    //           content: TreeInformationWidget(
-                    //               title: "TreeInfoWidget"));
-                    //     }),
                     ),
               ),
             ],
@@ -141,6 +173,8 @@ class _ForestMapState extends State<ForestMap> {
         ],
       );
     } else {
+      /// Wenn die Cookies nicht akzeptiert wurden wird die Map nicht
+      /// initialisiert
       shownMap = Container();
     }
   }
@@ -148,6 +182,18 @@ class _ForestMapState extends State<ForestMap> {
   @override
   Widget build(BuildContext context) {
     return Visibility(
+      /// Die Karte wird nur angezeigt, falls die Cookies akzeptiert
+      /// wurden
+      visible: widget.cookieManager.isAccepted(),
+
+      /// Wird angezeigt, wenn visible nicht auf true gesetzt ist, und die Karte
+      /// somit nicht angezeigt wird
+      replacement: ForestMapReplacement(
+        title: 'FHydrate - Karte',
+        cookieManager: widget.cookieManager,
+      ),
+
+      /// Wird angezeigt, falls die Cookies akzeptiert wurden
       child: Scaffold(
         drawer: DrawerBuilder.build(context),
         appBar: AppBar(
@@ -155,7 +201,9 @@ class _ForestMapState extends State<ForestMap> {
         ),
         body: Stack(
           children: [
+            /// Die an anderer Stelle initialisierte Karte
             shownMap,
+            /// Das Pop-Up mit den Bauminformationen
             Align(
               alignment: Alignment.centerLeft,
               child: Visibility(
@@ -169,51 +217,55 @@ class _ForestMapState extends State<ForestMap> {
             ),
           ],
         ),
-        floatingActionButton: Row(
-          // https://www.youtube.com/watch?v=nvAh3ENt2Kk&t=98s
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: <Widget>[
-            FloatingActionButton(
-              heroTag: "btnCenter",
-              onPressed: () => _center(),
-              child: const Icon(
-                Icons.my_location,
+        /// Die Aktionen zum zentrieren und zum Anpassen des
+        /// Zoom-Faktors
+        floatingActionButton: Visibility(
+          visible: fabVisible,
+          child: Row(
+            // https://www.youtube.com/watch?v=nvAh3ENt2Kk&t=98s
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: <Widget>[
+              FloatingActionButton(
+                heroTag: "btnCenter",
+                onPressed: () => _center(),
+                child: const Icon(
+                  Icons.my_location,
+                ),
               ),
-            ),
-            const SizedBox(
-              width: 10,
-            ),
-            FloatingActionButton(
-              heroTag: "btnZoomOut",
-              onPressed: () => _zoom(-1),
-              child: const Icon(
-                Icons.zoom_out,
+              const SizedBox(
+                width: 10,
               ),
-            ),
-            const SizedBox(
-              width: 10,
-            ),
-            FloatingActionButton(
-              heroTag: "btnZoomIn",
-              onPressed: () => _zoom(1),
-              child: const Icon(
-                Icons.zoom_in,
+              FloatingActionButton(
+                heroTag: "btnZoomOut",
+                onPressed: () => _zoom(-1),
+                child: const Icon(
+                  Icons.zoom_out,
+                ),
               ),
-            ),
-          ],
+              const SizedBox(
+                width: 10,
+              ),
+              FloatingActionButton(
+                heroTag: "btnZoomIn",
+                onPressed: () => _zoom(1),
+                child: const Icon(
+                  Icons.zoom_in,
+                ),
+              ),
+            ],
+          ),
         ),
-      ),
-      visible: widget.cookieManager.isAccepted(),
-
-      /// Wird angezeigt, wenn visible nicht auf true gesetzt ist, und die Karte
-      /// somit nicht angezeigt wird.
-      replacement: ForestMapReplacement(
-        title: 'FHydrate - Karte',
-        cookieManager: widget.cookieManager,
       ),
     );
   }
 
+  /**
+   * Funktion um das passende TreeInformationWidget
+   * zurückgegeben zu bekommen.
+   *
+   * @param  type Der gewünschte Typ des Widgets
+   * @return      Das TreeInformationWidget
+   */
   Widget getTreeInformationWidget(String type) {
     switch (type.toLowerCase()) {
       case 'tabs':
@@ -222,6 +274,7 @@ class _ForestMapState extends State<ForestMap> {
           onClosePressed: () => setState(
             () {
               treeInfoVisible = false;
+              fabVisible = true;
             },
           ),
         );

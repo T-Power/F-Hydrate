@@ -6,6 +6,9 @@ import 'package:f_hydrate/ui/widgets/gauge.dart';
 import 'package:f_hydrate/ui/widgets/tree_information_text.dart';
 import 'package:flutter/material.dart';
 
+/**
+ * StatefulWidget zur Anzeige von Bauminformationen bzw. der Messwerte.
+ */
 class TreeInformationTab extends StatefulWidget {
   const TreeInformationTab(
       {required this.treeInfo,
@@ -13,7 +16,10 @@ class TreeInformationTab extends StatefulWidget {
       this.constraints = const BoxConstraints()})
       : super(key: key);
 
+  /// Darzustellende Bauminformationen.
   final TreeInformation treeInfo;
+
+  /// Maximal zur Verfügung stehende Größe in der UI.
   final BoxConstraints constraints;
 
   @override
@@ -22,8 +28,10 @@ class TreeInformationTab extends StatefulWidget {
 
 class _TreeInformationTabState extends State<TreeInformationTab>
     with TickerProviderStateMixin {
+  /// Controller zur Veränderung der Tabs.
   TabController? controller;
 
+  /// Liste aller darzustellenden Tabs.
   List<Widget> tabs = [];
 
   @override
@@ -45,24 +53,40 @@ class _TreeInformationTabState extends State<TreeInformationTab>
           labelColor: Theme.of(context).colorScheme.secondary,
           unselectedLabelColor: Theme.of(context).textTheme.headline1!.color,
           tabs: const [
+            /// Textinformationen
             Icon(Icons.info),
+
+            /// Wassergehalt
             Icon(Icons.local_drink),
+
+            /// Temperatur
             Icon(Icons.thermostat),
+
+            /// Elektrische Leitfähigkeit
             Icon(Icons.bolt),
+
+            /// Salzgehalt
             Icon(Icons.local_florist),
+
+            /// Gelöste Stoffe
             Icon(Icons.science),
           ],
           controller: controller!,
         ),
       ),
+
+      /// Ausrichtung der UI Elemente als Spalte.
       body: Column(
         children: [
+          /// Kompletten Platz für den Inhalt einnehmen
           Expanded(
             child: TabBarView(
               children: tabs,
               controller: controller!,
             ),
           ),
+
+          /// Am unteren Bildschirmrand ein Widget verankern, das die Tab-Navigation erleichtert.
           Padding(
             padding: const EdgeInsets.only(bottom: 20),
             child: Center(
@@ -76,6 +100,7 @@ class _TreeInformationTabState extends State<TreeInformationTab>
     );
   }
 
+  /// Erzeugt eine Liste mit Tabs für jede Messeinheit des Sensors. Die Liste wird begonnen mit den Textinformationen über den Baum.
   List<Widget> buildTabs(Sensor sensor) {
     return [
       TreeInformationTextWidget(model: widget.treeInfo),

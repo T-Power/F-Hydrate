@@ -3,6 +3,15 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+/**
+ * Mit dem ThemeManager können Farben, Schriftarten, Schriftgrößen, etc. an einem zentralen Ort geändert werden.
+ *
+ * Der Zugriff kann dann mit
+ * `Theme.of(context)`
+ * erfolgen.
+ *
+ * Es sind unterschiedliche Farben für den Hell- und Dunkel-Modus der Anwendung hinterlegt. Die Farben und Schriftarten entsprechen dem entworfenen Style-Guide.
+ */
 class ThemeManager {
   // static const Color primaryColor = Colors.white;
   static const Color primaryColor = Color(

@@ -2,11 +2,11 @@ import 'package:flutter/cupertino.dart';
 
 import 'cookies.dart';
 
-/// WIRD MOMENTAN NICHT VERWENDET, KANN BEUTZT WERDEN, FALLS COOKIES ABGELEHNT WERDEN DÜRFEN
-
-/// Bietet die Möglichkeit Cookies zu verwalten.
-/// Ist notwendig, um die statischen Variablen der Cookie Klasse "stateful"-
-/// ähnlich in Widgets zu nutzen.
+/**
+ * Klasse, welche die Möglichkeit bietet Cookies zu verwalten.
+ * Ist notwendig, um die statischen Variablen der Cookie-Klasse
+ * "stateful"-ähnlich in Widgets zu nutzen.
+ */
 class CookieManager extends ChangeNotifier {
 
   bool isAccepted() {
@@ -17,22 +17,29 @@ class CookieManager extends ChangeNotifier {
     return Cookies.visible;
   }
 
-  void setAccepted(bool acc) {
-    Cookies.accepted = acc;
+  void setAccepted(bool accepted) {
+    Cookies.accepted = accepted;
     notifyListeners();
   }
 
-  void setVisible(bool vis) {
-    Cookies.visible = vis;
+  void setVisible(bool visible) {
+    Cookies.visible = visible;
     notifyListeners();
   }
 
-  /// Ist notwendig um beide Werte zu setzen, aber nur ein Notify zu schicken.
-  /// Sollten noch mehr Variablen zu der Klasse hinzukommen, könnte die
-  /// notify-Methode auch ausgelagert werden.
-  void setAcceptedAndVisible(bool acc, bool vis) {
-    Cookies.accepted = acc;
-    Cookies.visible = vis;
+  /**
+   * Funktion zum setzen von 'accepted' und 'visible',
+   * wobei nur ein Notify zurückgegeben wird.
+   * Sollten noch mehr Variablen zu der Klasse
+   * hinzukommen, könnte die notify-Methode auch
+   * ausgelagert werden.
+   *
+   * @param  accepted Info, ob Cookies akzeptiert wurden
+   * @param  visible  Info, ob Cookie-Banner sichtbar ist
+   */
+  void setAcceptedAndVisible(bool accepted, bool visible) {
+    Cookies.accepted = accepted;
+    Cookies.visible = visible;
     notifyListeners();
   }
 }

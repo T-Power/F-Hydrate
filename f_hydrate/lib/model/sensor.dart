@@ -88,27 +88,26 @@ class Sensor {
    */
   static Sensor randomSensor() {
     return Sensor(
-      id: "1",
-      voltage: 2.3,
-      // name: 'FH DO FB4',
-      temperature: Temperature(
-        Temperature.randomValue(),
-      ),
-      volumetricWaterContent: VolumetricWaterContent(
-        VolumetricWaterContent.randomValue(),
-      ),
-      electricalConductivity: ElectricalConductivity(
-        ElectricalConductivity.randomValue(),
-      ),
-      salinity: Salinity(
-        Salinity.randomValue(),
-      ),
-      totalDissolvedSolids: TotalDissolvedSolids(
-        TotalDissolvedSolids.randomValue(),
-      ),
-      dateTime: DateTime.now(),
-      tree: BiologicalTreeType.createExample()
-    );
+        id: "1",
+        voltage: 2.3,
+        // name: 'FH DO FB4',
+        temperature: Temperature(
+          Temperature.randomValue(),
+        ),
+        volumetricWaterContent: VolumetricWaterContent(
+          VolumetricWaterContent.randomValue(),
+        ),
+        electricalConductivity: ElectricalConductivity(
+          ElectricalConductivity.randomValue(),
+        ),
+        salinity: Salinity(
+          Salinity.randomValue(),
+        ),
+        totalDissolvedSolids: TotalDissolvedSolids(
+          TotalDissolvedSolids.randomValue(),
+        ),
+        dateTime: DateTime.now(),
+        tree: BiologicalTreeType.createExample());
   }
 }
 

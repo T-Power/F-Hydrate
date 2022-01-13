@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:f_hydrate/model/sensor.dart';
 import 'geographic_position.dart';
 import 'package:intl/intl.dart';
@@ -34,7 +36,18 @@ class TreeInformation {
         position: GeographicPosition(
             double.parse(json['latitude']), double.parse(json['longitude'])),
         yougTree: json['youngTree'].toLowerCase() == 'true',
-        sensor: Sensor.createExample());
+        sensor: Sensor(
+            id: json['latestMeasurement']['id'],
+            voltage: double.parse(json['voltage']),
+            temperature: Temperature(num.parse(json['temperature'])),
+            volumetricWaterContent:
+                VolumetricWaterContent(num.parse(json['vwc'])),
+            electricalConductivity:
+                ElectricalConductivity(num.parse(json['ec'])),
+            salinity: Salinity(num.parse(json['salinity'])),
+            totalDissolvedSolids: TotalDissolvedSolids(num.parse(json['tds'])),
+            dateTime: DateTime.now(),
+            tree: BiologicalTreeType()));
   }
 
   TreeInformation(

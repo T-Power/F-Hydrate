@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'dart:html';
+import 'dart:js';
 
 import 'package:f_hydrate/model/cookie_manager.dart';
 import 'package:f_hydrate/model/tree_information.dart';
@@ -58,17 +60,24 @@ class _ForestMapState extends State<ForestMap> {
   TreeInformation treeInfo = TreeInformation.createExample();
 
   /// Die initialen Koordinaten sind Dortmunds Koordinaten
-  LatLng center = LatLng(51.5135872, 7.4652981);
+  //LatLng center = LatLng(51.5135872, 7.4652981);
+  LatLng center = LatLng(1.0,1.0);
 
   /// MapController, um die Karte steuern zu können
   MapController mapController = MapController();
 
   late Future<List<TreeInformation>> futureTreeInformation;
+  late Future<String> futureString;
+
+  late Future<http.Response> futureAlbum;
 
   @override
   void initState() {
     super.initState();
+    futureString = fetchTreeString();
     futureTreeInformation = fetchTrees();
+    futureAlbum = fetchResponse();
+
 
     /// Wenn der MapController noch nicht bereit ist, kann es an verschiedenen Stellen
     /// zu Schwierigkeiten kommen, deswegen wird mit einer entsprechenden Variable
@@ -132,11 +141,11 @@ class _ForestMapState extends State<ForestMap> {
   void initMap() {
     if (widget.cookieManager.isAccepted()) {
 
-      shownMap = FutureBuilder<List<TreeInformation>>(
-        future: futureTreeInformation,
+      shownMap = FutureBuilder<String>(
+        future: futureString,
         builder: (context, snapshot){
           if(snapshot.hasData){
-            return getMap(snapshot.data!);
+            return Center(child: Text(snapshot.data!)); //getMap(snapshot.data!);
           }
           else{
             return Center(child: Text("Cannot load Map."),);
@@ -153,6 +162,18 @@ class _ForestMapState extends State<ForestMap> {
 
   @override
   Widget build(BuildContext context) {
+    // return Center(child: FutureBuilder<http.Response>(
+    //   future: futureAlbum, 
+    //   builder: (context, snapshot) {
+    //     if(snapshot.hasData){
+    //       return Text(snapshot.data!.body);
+    //     }
+    //     else{
+    //       return Text("No data loaded");
+    //     }
+    // },),);
+    
+    
     return Visibility(
       /// Die Karte wird nur angezeigt, falls die Cookies akzeptiert
       /// wurden
@@ -264,6 +285,29 @@ class _ForestMapState extends State<ForestMap> {
     }
   }
 
+
+  Future<String> fetchTreeString() async {
+    final response = await http.get(Uri.parse('https://fhydrate.fb4.fh-dortmund.de/api/v1/trees'), 
+    // headers: {
+    //   "Accept": "application/json",
+    //   "Access-Control-Allow-Origin": "*"
+    // }
+    );
+    
+    if (response.statusCode == 200) {
+      return response.body;
+    }
+    else{
+      return "Nothing";
+    }
+  }
+
+
+  Future<http.Response> fetchResponse() async {
+    return http.get(Uri.parse('https://jsonplaceholder.typicode.com/albums/1'));
+  }
+
+
   Future<List<TreeInformation>> fetchTrees() async {
     final response = await http.get(Uri.parse('https://fhydrate.fb4.fh-dortmund.de/api/v1/trees'));
 
@@ -283,64 +327,64 @@ class _ForestMapState extends State<ForestMap> {
   }
 
 
-  FlutterMap getMap(List<TreeInformation> treeInfos){
-    return FlutterMap(
-    mapController: mapController,
-        options: MapOptions(
-          center: center,
-          zoom: zoom,
+  // FlutterMap getMap(List<TreeInformation> treeInfos){
+  //   return FlutterMap(
+  //   mapController: mapController,
+  //       options: MapOptions(
+  //         center: center,
+  //         zoom: zoom,
 
-          /// Bei größerem/kleinerem Zoom würde nur grauer Bildschirm angezeigt
-          maxZoom: 18,
-          minZoom: 2,
+  //         /// Bei größerem/kleinerem Zoom würde nur grauer Bildschirm angezeigt
+  //         maxZoom: 18,
+  //         minZoom: 2,
 
-          /// Wenn die Flags nicht eingeschränkt würden, ließe sich der Bildschirm
-          /// am Handy rotieren, was leicht irritierend sein kann, falls Norden
-          /// plötzlich nicht mehr oben vom Bildschirm ist.
-          interactiveFlags: InteractiveFlag.pinchZoom | InteractiveFlag.drag,
-        ),
-        layers: [
-          /// Konfiguration der Karte
-          TileLayerOptions(
-            urlTemplate: "https://{s}.tile.openstreetmap.de/{z}/{x}/{y}.png",
-            subdomains: ['a', 'b', 'c'],
-            attributionBuilder: (_) {
-              return const Text(
-                "© OpenStreetMap contributors",
-                style: TextStyle(backgroundColor: Colors.white),
-              );
-            },
-          ),
+  //         /// Wenn die Flags nicht eingeschränkt würden, ließe sich der Bildschirm
+  //         /// am Handy rotieren, was leicht irritierend sein kann, falls Norden
+  //         /// plötzlich nicht mehr oben vom Bildschirm ist.
+  //         interactiveFlags: InteractiveFlag.pinchZoom | InteractiveFlag.drag,
+  //       ),
+  //       layers: [
+  //         /// Konfiguration der Karte
+  //         TileLayerOptions(
+  //           urlTemplate: "https://{s}.tile.openstreetmap.de/{z}/{x}/{y}.png",
+  //           subdomains: ['a', 'b', 'c'],
+  //           attributionBuilder: (_) {
+  //             return const Text(
+  //               "© OpenStreetMap contributors",
+  //               style: TextStyle(backgroundColor: Colors.white),
+  //             );
+  //           },
+  //         ),
 
-          /// Konfiguration der angezeigten Bäume
-          MarkerLayerOptions(
-            markers: getMarkers(treeInfos),
-          ),
-        ],
-      );
-  }
+  //         /// Konfiguration der angezeigten Bäume
+  //         MarkerLayerOptions(
+  //           markers: getMarkers(treeInfos),
+  //         ),
+  //       ],
+  //     );
+  // }
 
 
-  List<Marker> getMarkers(List<TreeInformation> treeInfos){
-    List<Marker> markers = [];
-    treeInfos.forEach((tree) {
-      markers.add(
-        Marker(
-                point: LatLng(treeInfo.position.latitude, treeInfo.position.longitude),
-                builder: (ctx) => IconButton(
-                    icon: const Icon(Icons.location_on, size: 30.0,),
-                    onPressed: () => setState(() {
-                          treeInfoVisible = true;
-                          fabVisible = MediaQuery.of(context).size.width > 500;
-                        })),
-              )
-      );
-    });
+  // List<Marker> getMarkers(List<TreeInformation> treeInfos){
+  //   List<Marker> markers = [];
+  //   treeInfos.forEach((tree) {
+  //     markers.add(
+  //       Marker(
+  //               point: LatLng(treeInfo.position.latitude, treeInfo.position.longitude),
+  //               builder: (ctx) => IconButton(
+  //                   icon: const Icon(Icons.location_on, size: 30.0,),
+  //                   onPressed: () => setState(() {
+  //                         treeInfoVisible = true;
+  //                         fabVisible = MediaQuery.of(context).size.width > 500;
+  //                       })),
+  //             )
+  //     );
+  //   });
     
 
-  return markers;
+  // return markers;
 
-  }
+  // }
 
 
 

@@ -54,6 +54,24 @@ class Sensor {
     this.tree = const BiologicalTreeType(),
   });
 
+factory Sensor.fromJson(Map<String, dynamic> json){
+  return Sensor(
+                id: json['id'],
+                voltage: Voltage(json['voltage']),
+                temperature:
+                    Temperature(json['temperature']),
+                volumetricWaterContent:
+                    VolumetricWaterContent(json['vwc']),
+                electricalConductivity:
+                    ElectricalConductivity(json['ec']),
+                salinity: Salinity(json['salinity']),
+                totalDissolvedSolids:
+                    TotalDissolvedSolids(json['tds']),
+                dateTime: DateTime.parse(json['time']),
+                tree: BiologicalTreeType());
+}
+
+
   /**
    * Konstruktor für die Klasse Sensor
    */

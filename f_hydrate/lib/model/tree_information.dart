@@ -35,7 +35,7 @@ class TreeInformation {
         birthday: DateTime.parse(json['plantedDate']),
         position: GeographicPosition(json['latitude'], json['longitude']),
         yougTree: json['youngTree'],
-        sensor: (json['latestMeasurement'] == null
+        sensor: json['latestMeasurement'] == null
             ? Sensor.standardValues()
             : Sensor(
                 id: json['latestMeasurement']['id'],
@@ -49,8 +49,8 @@ class TreeInformation {
                 salinity: Salinity(json['latestMeasurement']['salinity']),
                 totalDissolvedSolids:
                     TotalDissolvedSolids(json['latestMeasurement']['tds']),
-                dateTime: DateTime.parse(json['latestMeasurement']['dateTime']),
-                tree: BiologicalTreeType())));
+                dateTime: DateTime.parse(json['latestMeasurement']['time']),
+                tree: BiologicalTreeType()));
   }
 
   TreeInformation(

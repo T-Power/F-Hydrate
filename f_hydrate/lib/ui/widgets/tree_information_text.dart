@@ -71,7 +71,7 @@ class TreeInformationTextWidgetState extends State<TreeInformationTextWidget> {
       const SizedBox(height: 20),
       createPropertyRow(
         "Pflanzdatum",
-        getFormattedDate(widget.model.birthday),
+        getFormattedDate(widget.model.plantedDate),
       ),
       createDivider(),
       createPropertyRow("Akkuspannung", widget.model.sensor.voltage.toString()),

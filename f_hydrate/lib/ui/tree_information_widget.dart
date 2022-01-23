@@ -1,6 +1,7 @@
 import 'package:f_hydrate/model/sensor.dart';
 import 'package:f_hydrate/model/tree_information.dart';
 import 'package:f_hydrate/ui/widgets/gauge.dart';
+import 'package:f_hydrate/util/DateUtil.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -122,14 +123,6 @@ class TreeInformationWidgetState extends State<TreeInformationWidget> {
         children: contentWidgets);
   }
 
-  String getFormattedDate(DateTime date) {
-    return date.day.toString() +
-        "." +
-        date.month.toString() +
-        "." +
-        date.year.toString();
-  }
-
   Widget buildCloseButton() {
     return Align(
       alignment: Alignment.topRight,
@@ -157,7 +150,7 @@ class TreeInformationWidgetState extends State<TreeInformationWidget> {
       createDivider(),
       createPropertyRow(
         "Pflanzdatum",
-        getFormattedDate(widget.model.birthday),
+        widget.model.plantedDate.toDateString(),
       ),
       createDivider(),
       createPropertyRow(

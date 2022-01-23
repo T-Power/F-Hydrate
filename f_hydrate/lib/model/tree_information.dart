@@ -44,7 +44,6 @@ class TreeInformation {
 
   Map<String, String> toBackendStringMap() {
     return {
-      'id': this.id.toString(),
       'deviceId': this.deviceId.toString(),
       'plantedDate': this.plantedDate.toBackendDateString(),
       'longitude': this.position.longitude.toString(),

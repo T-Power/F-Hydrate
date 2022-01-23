@@ -180,10 +180,7 @@ class CreateTreeWidgetState extends State<CreateTreeWidget> {
   }
 
   bool validatePassword() {
-    String secret = "thisIsNotThePasswordYouAreLookingFor";
     String password = _passwordController.value.text;
-    print(
-        'Expected <$secret> and found <$password>. Hash: <${secret.hashCode}> vs. <${password.hashCode}>.');
-    return _passwordController.value.text.hashCode == 576332349;
+    return password == "!Tr3es2022.";
   }
 }

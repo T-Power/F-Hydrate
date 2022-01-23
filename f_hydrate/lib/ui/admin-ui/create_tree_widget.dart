@@ -35,6 +35,9 @@ class CreateTreeWidgetState extends State<CreateTreeWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text("Baum erstellen"),
+      ),
       key: widget.key,
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.send),

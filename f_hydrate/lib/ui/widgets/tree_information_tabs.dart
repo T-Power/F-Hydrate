@@ -37,7 +37,7 @@ class _TreeInformationTabState extends State<TreeInformationTab>
   @override
   void initState() {
     super.initState();
-    tabs = buildTabs(widget.treeInfo.sensor);
+    tabs = buildTabs(widget.treeInfo.sensors.first);
     controller = TabController(length: tabs.length, vsync: this);
   }
 

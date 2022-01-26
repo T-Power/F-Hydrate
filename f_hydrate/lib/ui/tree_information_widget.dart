@@ -67,7 +67,7 @@ class TreeInformationWidgetState extends State<TreeInformationWidget> {
   }
 
   List<Widget> buildGauges(BoxConstraints constraints) {
-    Sensor sensor = widget.model.sensor;
+    Sensor sensor = widget.model.sensors.first;
     return [
       SizedBox(
         height: 10,
@@ -139,13 +139,14 @@ class TreeInformationWidgetState extends State<TreeInformationWidget> {
   }
 
   List<Widget> buildTreeInformation() {
+    Sensor sensor = widget.model.sensors.first;
     return [
       Text('ID: ${widget.model.id}'),
       const SizedBox(height: 20),
       createDivider(),
       createPropertyRow(
         "Akkuspannung",
-        widget.model.sensor.voltage.toString(),
+        sensor.voltage.toString(),
       ),
       createDivider(),
       createPropertyRow(
@@ -155,17 +156,17 @@ class TreeInformationWidgetState extends State<TreeInformationWidget> {
       createDivider(),
       createPropertyRow(
         "Temperatur",
-        widget.model.sensor.temperature.toString(),
+        sensor.temperature.toString(),
       ),
       createDivider(),
       createPropertyRow(
         "Wassergehalt",
-        widget.model.sensor.volumetricWaterContent.toString(),
+        sensor.volumetricWaterContent.toString(),
       ),
       createDivider(),
       createPropertyRow(
         "Salzgehalt",
-        widget.model.sensor.salinity.toString(),
+        sensor.salinity.toString(),
       ),
     ];
   }

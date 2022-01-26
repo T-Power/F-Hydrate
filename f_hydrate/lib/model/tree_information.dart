@@ -22,7 +22,8 @@ class TreeInformation {
   bool youngTree = false;
 
   /// Der am Baum montierte Sensor.
-  Sensor sensor = Sensor.standardValues();
+  List<Sensor>  sensors =
+      new List.from({Sensor.standardValues()}, growable: true);
 
   /// Bezeichnung des Baumes, z. B. Jungbuche Campus Emil-Figge-Str, FB4, blaue Banderole.
   //String name = "";
@@ -37,9 +38,11 @@ class TreeInformation {
         plantedDate: DateTime.parse(json['plantedDate']),
         position: GeographicPosition(json['latitude'], json['longitude']),
         youngTree: json['youngTree'],
-        sensor: json['latestMeasurement'] == null
-            ? Sensor.standardValues()
-            : Sensor.fromJson(json['latestMeasurement']));
+        sensors: new List.from({
+          json['latestMeasurement'] == null
+              ? Sensor.standardValues()
+              : Sensor.fromJson(json['latestMeasurement'])
+        }, growable: true));
   }
 
   Map<String, String> toBackendStringMap() {
@@ -58,7 +61,7 @@ class TreeInformation {
       required this.plantedDate,
       required this.position,
       required this.youngTree,
-      required this.sensor});
+      required this.sensors});
 
   /// Named constructor, erzeugt einen Beispieldatensatz.
   static TreeInformation createExample() {
@@ -68,7 +71,7 @@ class TreeInformation {
       plantedDate: DateTime.now(),
       youngTree: true,
       position: const GeographicPosition(51.494111843297155, 7.422219578674077),
-      sensor: Sensor.randomSensor(),
+      sensors: new List.from({Sensor.randomSensor()}, growable: true),
     );
 
     return tree;

@@ -1,3 +1,4 @@
+import 'package:f_hydrate/model/sensor.dart';
 import 'package:f_hydrate/model/tree_information.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -66,6 +67,7 @@ class TreeInformationTextWidgetState extends State<TreeInformationTextWidget> {
 
   /// Baut eine Liste der Informationen in Textform.
   List<Widget> buildTreeInformation() {
+    Sensor sensor = widget.model.sensors.first;
     return [
       Text('ID: ${widget.model.id}'),
       const SizedBox(height: 20),
@@ -74,36 +76,36 @@ class TreeInformationTextWidgetState extends State<TreeInformationTextWidget> {
         getFormattedDate(widget.model.plantedDate),
       ),
       createDivider(),
-      createPropertyRow("Akkuspannung", widget.model.sensor.voltage.toString()),
+      createPropertyRow("Akkuspannung", sensor.voltage.toString()),
       createDivider(),
       createPropertyRow(
         "Wassergehalt",
-        widget.model.sensor.volumetricWaterContent.toString(),
+        sensor.volumetricWaterContent.toString(),
       ),
       createDivider(),
       createPropertyRow(
         "Temperatur",
-        widget.model.sensor.temperature.toString(),
+        sensor.temperature.toString(),
       ),
       createDivider(),
       createPropertyRow(
         "Leitfähigkeit",
-        widget.model.sensor.electricalConductivity.toString(),
+        sensor.electricalConductivity.toString(),
       ),
       createDivider(),
       createPropertyRow(
         "Salzgehalt",
-        widget.model.sensor.salinity.toString(),
+        sensor.salinity.toString(),
       ),
       createDivider(),
       createPropertyRow(
         "Abdampfrückstand",
-        widget.model.sensor.totalDissolvedSolids.toString(),
+        sensor.totalDissolvedSolids.toString(),
       ),
       createDivider(),
       createPropertyRow(
         "Zeitstempel",
-        getFormattedDateTime(widget.model.sensor.dateTime),
+        getFormattedDateTime(sensor.dateTime),
       )
     ];
   }

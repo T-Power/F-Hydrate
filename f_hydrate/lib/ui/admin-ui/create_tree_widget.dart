@@ -61,7 +61,7 @@ class CreateTreeWidgetState extends State<CreateTreeWidget> {
           double.parse(_latitudeController.value.text),
           double.parse(_longitudeController.value.text)),
       youngTree: isYoungTree,
-      sensor: Sensor.createExample(),
+      sensors: new List.from({Sensor.createExample()}),
     );
     Map<String, dynamic> json = data.toBackendStringMap();
     if (!validatePassword()) {

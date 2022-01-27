@@ -13,16 +13,23 @@ class TreeInformation {
   /// Das Pflanzdatum des Baumes.
   DateTime plantedDate = DateTime.now();
 
-  String deviceId = "";
-
   /// Die genaue gegrafische Position des Baumes (Längen- und Breitengrad).
   GeographicPosition position = const GeographicPosition(0, 0);
+
+  /// Lebensbereich Faktor (L)
+  double locationFactor = 0;
+
+  /// Bodenart Faktor (B)
+  double soilTypeFactor = 0;
+
+  /// Seonnenexposition Faktor (S)
+  double sunExpositionFactor = 0;
 
   /// Handelt es sich um einen jungen Baum?
   bool youngTree = false;
 
   /// Der am Baum montierte Sensor.
-  List<Sensor>  sensors =
+  List<Sensor> sensors =
       new List.from({Sensor.standardValues()}, growable: true);
 
   /// Bezeichnung des Baumes, z. B. Jungbuche Campus Emil-Figge-Str, FB4, blaue Banderole.
@@ -34,10 +41,12 @@ class TreeInformation {
   factory TreeInformation.fromJson(Map<String, dynamic> json) {
     return TreeInformation(
         id: json['id'],
-        deviceId: json['deviceId'],
         plantedDate: DateTime.parse(json['plantedDate']),
         position: GeographicPosition(json['latitude'], json['longitude']),
         youngTree: json['youngTree'],
+        locationFactor: json['locationFactor'],
+        soilTypeFactor: json['soilTypeFactor'],
+        sunExpositionFactor: json['sunExpositionFactor'],
         sensors: new List.from({
           json['latestMeasurement'] == null
               ? Sensor.standardValues()
@@ -45,21 +54,34 @@ class TreeInformation {
         }, growable: true));
   }
 
-  Map<String, String> toBackendStringMap() {
+  Map<String, dynamic> toTreeCreationJson() {
     return {
-      'deviceId': this.deviceId.toString(),
-      'plantedDate': this.plantedDate.toBackendDateString(),
-      'longitude': this.position.longitude.toString(),
-      'latitude': this.position.latitude.toString(),
-      'youngTree': this.youngTree.toString(),
+      '"plantedDate"': '"' + this.plantedDate.toBackendDateString() + '"',
+      '"longitude"': this.position.longitude,
+      '"latitude"': this.position.latitude,
+      '"locationFactor"': this.locationFactor,
+      '"sunExpositionFactor"': this.sunExpositionFactor,
+      '"soilTypeFactor"': this.soilTypeFactor,
+      '"youngTree"': this.youngTree,
+      '"sensors"': buildSensorList(),
     };
+  }
+
+  String buildSensorList() {
+    List<Map<String, dynamic>> list = new List.of([], growable: true);
+    for (Sensor sensor in sensors) {
+      list.add(sensor.toTreeCreationSensorJson());
+    }
+    return list.toString();
   }
 
   TreeInformation(
       {required this.id,
-      required this.deviceId,
       required this.plantedDate,
       required this.position,
+      required this.locationFactor,
+      required this.soilTypeFactor,
+      required this.sunExpositionFactor,
       required this.youngTree,
       required this.sensors});
 
@@ -67,8 +89,10 @@ class TreeInformation {
   static TreeInformation createExample() {
     var tree = TreeInformation(
       id: 1,
-      deviceId: "Example-Device",
       plantedDate: DateTime.now(),
+      locationFactor: 1.0,
+      soilTypeFactor: 0.9,
+      sunExpositionFactor: 1.0,
       youngTree: true,
       position: const GeographicPosition(51.494111843297155, 7.422219578674077),
       sensors: new List.from({Sensor.randomSensor()}, growable: true),

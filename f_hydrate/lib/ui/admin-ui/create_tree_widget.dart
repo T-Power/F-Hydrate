@@ -19,11 +19,17 @@ class CreateTreeWidgetState extends State<CreateTreeWidget> {
 
   TextEditingController _idController =
       new TextEditingController(text: "Wird generiert");
-  TextEditingController _deviceIdController = new TextEditingController();
+  TextEditingController _firstSensorIdController = new TextEditingController(text: "1");
+  TextEditingController _secondSensorIdController = new TextEditingController();
+  TextEditingController _thirdSensorIdController = new TextEditingController();
   TextEditingController _plantedDateController = new TextEditingController();
-  TextEditingController _longitudeController = new TextEditingController();
-  TextEditingController _latitudeController = new TextEditingController();
-  TextEditingController _passwordController = new TextEditingController();
+  TextEditingController _longitudeController = new TextEditingController(text: "7.4");
+  TextEditingController _latitudeController = new TextEditingController(text: "51.5");
+  TextEditingController _locationFactorController = new TextEditingController(text: "1");
+  TextEditingController _soilTypeFactorController = new TextEditingController(text: "1.1");
+  TextEditingController _sunExpositionFactorController =
+      new TextEditingController(text: "1.2");
+  TextEditingController _passwordController = new TextEditingController(text: "!Tr3es2022.");
   bool isYoungTree = true;
   DateTime selectedDate = DateTime.now();
 
@@ -52,29 +58,44 @@ class CreateTreeWidgetState extends State<CreateTreeWidget> {
     );
   }
 
+  void createSensor(List<Sensor> list, String id, String depth) {
+    if (id.isNotEmpty) {
+      list.add(Sensor.standardValues(
+          id: int.parse(id),
+          mqtt_sensor_id: int.parse(id),
+          depth: int.parse(depth)));
+    }
+  }
+
   void postTree(BuildContext context) async {
+    List<Sensor> sensors = List.from([], growable: true);
+    createSensor(sensors, _firstSensorIdController.value.text, "1");
+    createSensor(sensors, _secondSensorIdController.value.text, "2");
+    createSensor(sensors, _thirdSensorIdController.value.text, "3");
     TreeInformation data = new TreeInformation(
       id: -1,
-      deviceId: _deviceIdController.value.text,
       plantedDate: selectedDate,
       position: new GeographicPosition(
           double.parse(_latitudeController.value.text),
           double.parse(_longitudeController.value.text)),
+      locationFactor: double.parse(_locationFactorController.value.text),
+      soilTypeFactor: double.parse(_soilTypeFactorController.value.text),
+      sunExpositionFactor:
+          double.parse(_sunExpositionFactorController.value.text),
       youngTree: isYoungTree,
-      sensors: new List.from({Sensor.createExample()}),
+      sensors: sensors,
     );
-    Map<String, dynamic> json = data.toBackendStringMap();
     if (!validatePassword()) {
       showSnackBar(context, "Passwort falsch.");
       return;
     }
+    String json = data.toTreeCreationJson().toString();
     final response = await http.post(
       Uri.parse('https://fhydrate.fb4.fh-dortmund.de/api/v1/trees'),
       body: json,
-      // headers: {
-      //   "Accept": "application/json",
-      //   "Access-Control-Allow-Origin": "*"
-      // }
+      headers: {
+        "Content-Type": "application/json",
+      }
     );
 
     //Response status code is not known. It might be 200 == OK or 201 == created or 202 == Accepted, ...
@@ -103,7 +124,14 @@ class CreateTreeWidgetState extends State<CreateTreeWidget> {
       longLatValid = false;
       showSnackBar(this.context, "Längen-/Breitengrad nicht numerisch.");
     }
-    bool isValid = _deviceIdController.value.text.isNotEmpty &&
+    bool sensorIdValid = _firstSensorIdController.value.text.isNotEmpty ||
+        _secondSensorIdController.value.text.isNotEmpty ||
+        _thirdSensorIdController.value.text.isNotEmpty;
+    bool factorsValid = _sunExpositionFactorController.value.text.isNotEmpty &&
+        _soilTypeFactorController.value.text.isNotEmpty &&
+        _locationFactorController.value.text.isNotEmpty;
+    bool isValid = sensorIdValid &&
+        factorsValid &&
         selectedDate.toBackendDateString() != "---" &&
         _longitudeController.value.text.isNotEmpty &&
         _latitudeController.value.text.isNotEmpty &&
@@ -126,8 +154,21 @@ class CreateTreeWidgetState extends State<CreateTreeWidget> {
         ),
         InputField(
           icon: Icons.devices,
-          title: "Device-Id",
-          controller: _deviceIdController,
+          title: "Sensor Id (Tiefe 1)",
+          controller: _firstSensorIdController,
+          textInputType: TextInputType.number,
+        ),
+        InputField(
+          icon: Icons.devices,
+          title: "Sensor Id (Tiefe 2)",
+          controller: _secondSensorIdController,
+          textInputType: TextInputType.number,
+        ),
+        InputField(
+          icon: Icons.devices,
+          title: "Sensor Id (Tiefe 3)",
+          controller: _thirdSensorIdController,
+          textInputType: TextInputType.number,
         ),
         InkWell(
           //Child's InkWell would override clicks within the text field. So it is ignored and all clicks are caught by parent InkWell.
@@ -151,6 +192,24 @@ class CreateTreeWidgetState extends State<CreateTreeWidget> {
           icon: Icons.location_on,
           title: "Breitengrad",
           controller: _latitudeController,
+          textInputType: TextInputType.number,
+        ),
+        InputField(
+          icon: Icons.local_drink,
+          title: "Lebensbereich Faktor (L)",
+          controller: _locationFactorController,
+          textInputType: TextInputType.number,
+        ),
+        InputField(
+          icon: Icons.science,
+          title: "Bodenart Faktor (B)",
+          controller: _soilTypeFactorController,
+          textInputType: TextInputType.number,
+        ),
+        InputField(
+          icon: Icons.wb_sunny,
+          title: "Sonnenexposition Faktor (S)",
+          controller: _sunExpositionFactorController,
           textInputType: TextInputType.number,
         ),
         SwitchListTile(

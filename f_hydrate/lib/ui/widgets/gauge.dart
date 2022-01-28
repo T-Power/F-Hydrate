@@ -12,6 +12,7 @@ class Gauge extends StatefulWidget {
   const Gauge(
       {Key? key,
       required this.unit,
+      this.description = "",
       this.targetValue = -1,
       this.constraints = const BoxConstraints()})
       : super(key: key);
@@ -21,6 +22,9 @@ class Gauge extends StatefulWidget {
 
   /// Der Soll-Wert.
   final num targetValue;
+
+  //Beschreibung des Sensors
+  final String description;
 
   /// Die Containergröße, die in der UI zur Verfügung steht.
   final BoxConstraints constraints;
@@ -132,6 +136,19 @@ class GaugeState extends State<Gauge> {
           /// Soll-Wert (Wert).
           Text(
             '${(targetValue * unit.multiplier).toStringAsFixed(1)} ${unit.unit}',
+            style: TextStyle(
+              fontSize: 8 + additionalFontSize(smallestSide, 29, density),
+            ),
+          ),
+
+          /// Abstand
+          SizedBox(
+            height: screenHeight * 0.04,
+          ),
+
+          /// Sensor-Beschreibung.
+          Text(
+            '${widget.description}',
             style: TextStyle(
               fontSize: 8 + additionalFontSize(smallestSide, 29, density),
             ),

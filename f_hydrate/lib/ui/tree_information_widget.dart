@@ -59,15 +59,16 @@ class TreeInformationWidgetState extends State<TreeInformationWidget> {
     if (_useList) {
       contentWidgets.clear();
       contentWidgets.add(buildCloseButton());
-      contentWidgets.addAll(buildTreeInformation());
-      contentWidgets.addAll(buildGauges(constraints));
+      for(Sensor sensor in widget.model.sensors) {
+        contentWidgets.addAll(buildTreeInformation(sensor));
+        contentWidgets.addAll(buildGauges(constraints, sensor));
+      }
       return buildList();
     }
     return Container();
   }
 
-  List<Widget> buildGauges(BoxConstraints constraints) {
-    Sensor sensor = widget.model.sensors.first;
+  List<Widget> buildGauges(BoxConstraints constraints, Sensor sensor) {
     return [
       SizedBox(
         height: 10,
@@ -138,8 +139,7 @@ class TreeInformationWidgetState extends State<TreeInformationWidget> {
     );
   }
 
-  List<Widget> buildTreeInformation() {
-    Sensor sensor = widget.model.sensors.first;
+  List<Widget> buildTreeInformation(Sensor sensor) {
     return [
       Text('ID: ${widget.model.id}'),
       const SizedBox(height: 20),

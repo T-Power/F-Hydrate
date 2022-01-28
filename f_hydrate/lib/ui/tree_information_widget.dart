@@ -1,6 +1,7 @@
 import 'package:f_hydrate/model/sensor.dart';
 import 'package:f_hydrate/model/tree_information.dart';
 import 'package:f_hydrate/ui/widgets/gauge.dart';
+import 'package:f_hydrate/util/DateUtil.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -58,15 +59,16 @@ class TreeInformationWidgetState extends State<TreeInformationWidget> {
     if (_useList) {
       contentWidgets.clear();
       contentWidgets.add(buildCloseButton());
-      contentWidgets.addAll(buildTreeInformation());
-      contentWidgets.addAll(buildGauges(constraints));
+      for(Sensor sensor in widget.model.sensors) {
+        contentWidgets.addAll(buildTreeInformation(sensor));
+        contentWidgets.addAll(buildGauges(constraints, sensor));
+      }
       return buildList();
     }
     return Container();
   }
 
-  List<Widget> buildGauges(BoxConstraints constraints) {
-    Sensor sensor = widget.model.sensor;
+  List<Widget> buildGauges(BoxConstraints constraints, Sensor sensor) {
     return [
       SizedBox(
         height: 10,
@@ -122,14 +124,6 @@ class TreeInformationWidgetState extends State<TreeInformationWidget> {
         children: contentWidgets);
   }
 
-  String getFormattedDate(DateTime date) {
-    return date.day.toString() +
-        "." +
-        date.month.toString() +
-        "." +
-        date.year.toString();
-  }
-
   Widget buildCloseButton() {
     return Align(
       alignment: Alignment.topRight,
@@ -145,34 +139,34 @@ class TreeInformationWidgetState extends State<TreeInformationWidget> {
     );
   }
 
-  List<Widget> buildTreeInformation() {
+  List<Widget> buildTreeInformation(Sensor sensor) {
     return [
       Text('ID: ${widget.model.id}'),
       const SizedBox(height: 20),
       createDivider(),
       createPropertyRow(
         "Akkuspannung",
-        widget.model.sensor.voltage.toString(),
+        sensor.voltage.toString(),
       ),
       createDivider(),
       createPropertyRow(
         "Pflanzdatum",
-        getFormattedDate(widget.model.birthday),
+        widget.model.plantedDate.toDateString(),
       ),
       createDivider(),
       createPropertyRow(
         "Temperatur",
-        widget.model.sensor.temperature.toString(),
+        sensor.temperature.toString(),
       ),
       createDivider(),
       createPropertyRow(
         "Wassergehalt",
-        widget.model.sensor.volumetricWaterContent.toString(),
+        sensor.volumetricWaterContent.toString(),
       ),
       createDivider(),
       createPropertyRow(
         "Salzgehalt",
-        widget.model.sensor.salinity.toString(),
+        sensor.salinity.toString(),
       ),
     ];
   }

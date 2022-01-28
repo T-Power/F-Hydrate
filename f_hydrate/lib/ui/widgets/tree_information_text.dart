@@ -1,3 +1,4 @@
+import 'package:f_hydrate/model/sensor.dart';
 import 'package:f_hydrate/model/tree_information.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -64,50 +65,6 @@ class TreeInformationTextWidgetState extends State<TreeInformationTextWidget> {
         date.minute.toString();
   }
 
-  /// Baut eine Liste der Informationen in Textform.
-  List<Widget> buildTreeInformation() {
-    return [
-      Text('ID: ${widget.model.id}'),
-      const SizedBox(height: 20),
-      createPropertyRow(
-        "Pflanzdatum",
-        getFormattedDate(widget.model.birthday),
-      ),
-      createDivider(),
-      createPropertyRow("Akkuspannung", widget.model.sensor.voltage.toString()),
-      createDivider(),
-      createPropertyRow(
-        "Wassergehalt",
-        widget.model.sensor.volumetricWaterContent.toString(),
-      ),
-      createDivider(),
-      createPropertyRow(
-        "Temperatur",
-        widget.model.sensor.temperature.toString(),
-      ),
-      createDivider(),
-      createPropertyRow(
-        "Leitfähigkeit",
-        widget.model.sensor.electricalConductivity.toString(),
-      ),
-      createDivider(),
-      createPropertyRow(
-        "Salzgehalt",
-        widget.model.sensor.salinity.toString(),
-      ),
-      createDivider(),
-      createPropertyRow(
-        "Abdampfrückstand",
-        widget.model.sensor.totalDissolvedSolids.toString(),
-      ),
-      createDivider(),
-      createPropertyRow(
-        "Zeitstempel",
-        getFormattedDateTime(widget.model.sensor.dateTime),
-      )
-    ];
-  }
-
   /// Erzeugt eine Zeile für Wertbezeichnung und Wert.
   Row createPropertyRow(String header, String value) {
     return Row(
@@ -128,5 +85,59 @@ class TreeInformationTextWidgetState extends State<TreeInformationTextWidget> {
   /// Erzeugt eine optische Abtrennung.
   Divider createDivider() {
     return Divider(color: Theme.of(context).textTheme.headline1!.color);
+  }
+
+  /// Baut eine Liste der Informationen in Textform.
+  List<Widget> buildTreeInformation() {
+    List<Widget> widgets = [
+      Text('ID: ${widget.model.id}'),
+      const SizedBox(height: 20),
+      createPropertyRow(
+        "Pflanzdatum",
+        getFormattedDate(widget.model.plantedDate),
+      ),
+      createDivider(),
+      createDivider(),
+    ];
+    for (Sensor sensor in widget.model.sensors) {
+      widgets.addAll([
+        createPropertyRow("Sensor Id", sensor.id.toString()),
+        createDivider(),
+        createPropertyRow("Akkuspannung", sensor.voltage.toString()),
+        createDivider(),
+        createPropertyRow(
+          "Wassergehalt",
+          sensor.volumetricWaterContent.toString(),
+        ),
+        createDivider(),
+        createPropertyRow(
+          "Temperatur",
+          sensor.temperature.toString(),
+        ),
+        createDivider(),
+        createPropertyRow(
+          "Leitfähigkeit",
+          sensor.electricalConductivity.toString(),
+        ),
+        createDivider(),
+        createPropertyRow(
+          "Salzgehalt",
+          sensor.salinity.toString(),
+        ),
+        createDivider(),
+        createPropertyRow(
+          "Abdampfrückstand",
+          sensor.totalDissolvedSolids.toString(),
+        ),
+        createDivider(),
+        createPropertyRow(
+          "Zeitstempel",
+          getFormattedDateTime(sensor.dateTime),
+        ),
+        createDivider(),
+        createDivider(),
+      ]);
+    }
+    return widgets;
   }
 }

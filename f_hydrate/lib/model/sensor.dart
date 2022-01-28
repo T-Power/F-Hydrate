@@ -9,6 +9,12 @@ class Sensor {
   /// Die Id des Sensors.
   int id = 0;
 
+  /// MQTT Id des Sensors.
+  int mqtt_sensor_id = 0;
+
+  /// Tiefen Id des Sensors
+  int depth = 1;
+
   /// Eine sprechende Bezeichnung des Sensors, z. B. "Campus Emil-Figge-Straße, FB4".
   // String name;
   /**/
@@ -44,7 +50,8 @@ class Sensor {
    */
   Sensor.standardValues({
     this.id = 1,
-    //   this.name = '',
+    this.mqtt_sensor_id = 1,
+    this.depth = 1,
     this.voltage = const Voltage(0),
     this.temperature = const Temperature(0),
     this.volumetricWaterContent = const VolumetricWaterContent(0),
@@ -54,30 +61,44 @@ class Sensor {
     this.tree = const BiologicalTreeType(),
   });
 
-factory Sensor.fromJson(Map<String, dynamic> json){
-  return Sensor(
-                id: json['id'],
-                voltage: Voltage(json['voltage']),
-                temperature:
-                    Temperature(json['temperature']),
-                volumetricWaterContent:
-                    VolumetricWaterContent(json['vwc']),
-                electricalConductivity:
-                    ElectricalConductivity(json['ec']),
-                salinity: Salinity(json['salinity']),
-                totalDissolvedSolids:
-                    TotalDissolvedSolids(json['tds']),
-                dateTime: DateTime.parse(json['time']),
-                tree: BiologicalTreeType());
-}
+  factory Sensor.fromJson(Map<String, dynamic> json) {
+    return Sensor(
+        id: json['id'],
+        mqtt_sensor_id: json['mqtt_sensor_id'],
+        depth: json['depth'] ?? -1,
+        voltage: Voltage(json['voltage']),
+        temperature: Temperature(json['temperature']),
+        volumetricWaterContent: VolumetricWaterContent(json['vwc']),
+        electricalConductivity: ElectricalConductivity(json['ec']),
+        salinity: Salinity(json['salinity']),
+        totalDissolvedSolids: TotalDissolvedSolids(json['tds']),
+        dateTime: DateTime.parse(json['time']),
+        tree: BiologicalTreeType());
+  }
 
+  static List<Sensor> listFromJson(List<dynamic> json) {
+    List<Map<String, dynamic>> jsonList = json.cast<Map<String, dynamic>>();
+    List<Sensor> sensors = new List.of([], growable: true);
+    for (Map<String, dynamic> map in json) {
+      sensors.add(Sensor.fromJson(map));
+    }
+    return sensors;
+  }
+
+  Map<String, dynamic> toTreeCreationSensorJson() {
+    Map<String, dynamic> map = new Map();
+    map['"mqtt_sensor_id"'] = this.mqtt_sensor_id;
+    map['"depth"'] = this.depth;
+    return map;
+  }
 
   /**
    * Konstruktor für die Klasse Sensor
    */
   Sensor({
     required this.id,
-    //   this.name = '',
+    required this.mqtt_sensor_id,
+    required this.depth,
     required this.voltage,
     required this.temperature,
     required this.volumetricWaterContent,
@@ -107,6 +128,8 @@ factory Sensor.fromJson(Map<String, dynamic> json){
   static Sensor randomSensor() {
     return Sensor(
         id: 0,
+        mqtt_sensor_id: 0,
+        depth: 1,
         voltage: Voltage.random(),
         // name: 'FH DO FB4',
         temperature: Temperature(

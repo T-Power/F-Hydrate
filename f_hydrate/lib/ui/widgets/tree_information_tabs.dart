@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:f_hydrate/model/sensor.dart';
 import 'package:f_hydrate/model/tree_information.dart';
 import 'package:f_hydrate/ui/widgets/gauge.dart';
@@ -37,7 +35,7 @@ class _TreeInformationTabState extends State<TreeInformationTab>
   @override
   void initState() {
     super.initState();
-    tabs = buildTabs(widget.treeInfo.sensor);
+    tabs = buildTabs(widget.treeInfo.sensors);
     controller = TabController(length: tabs.length, vsync: this);
   }
 
@@ -101,36 +99,116 @@ class _TreeInformationTabState extends State<TreeInformationTab>
   }
 
   /// Erzeugt eine Liste mit Tabs für jede Messeinheit des Sensors. Die Liste wird begonnen mit den Textinformationen über den Baum.
-  List<Widget> buildTabs(Sensor sensor) {
-    return [
+  List<Widget> buildTabs(List<Sensor> sensors) {
+    List<Widget> widgets = [];
+    widgets = [
       TreeInformationTextWidget(model: widget.treeInfo),
-      Gauge(
-        unit: sensor.volumetricWaterContent,
-        targetValue:
-            Random().nextInt(sensor.volumetricWaterContent.max.toInt()),
-        constraints: widget.constraints,
+      ListView(
+        children: buildGauges(sensors, widget.constraints,
+            "volumetricWaterContent", widget.treeInfo),
       ),
-      Gauge(
-        unit: sensor.temperature,
-        targetValue: Random().nextInt(sensor.temperature.max.toInt()),
-        constraints: widget.constraints,
+      ListView(
+        children: buildGauges(
+            sensors, widget.constraints, "temperature", widget.treeInfo),
       ),
-      Gauge(
-        unit: sensor.electricalConductivity,
-        targetValue:
-            Random().nextInt(sensor.electricalConductivity.max.toInt()),
-        constraints: widget.constraints,
+      ListView(
+        children: buildGauges(sensors, widget.constraints,
+            "electricalConductivity", widget.treeInfo),
       ),
-      Gauge(
-        unit: sensor.salinity,
-        targetValue: Random().nextInt(sensor.salinity.max.toInt()),
-        constraints: widget.constraints,
+      ListView(
+        children: buildGauges(
+            sensors, widget.constraints, "salinity", widget.treeInfo),
       ),
-      Gauge(
-        unit: sensor.totalDissolvedSolids,
-        targetValue: Random().nextInt(sensor.totalDissolvedSolids.max.toInt()),
-        constraints: widget.constraints,
+      ListView(
+        children: buildGauges(sensors, widget.constraints,
+            "totalDissolvedSolids", widget.treeInfo),
       ),
     ];
+    return widgets;
+  }
+
+  List<Widget> buildGauges(List<Sensor> sensors, BoxConstraints constraints,
+      String unit, TreeInformation treeInfo) {
+    List<Widget> widgets = [];
+    for (Sensor sensor in sensors) {
+      switch (unit) {
+        case "volumetricWaterContent":
+          num targetValue = 0;
+          widgets.add(
+            SizedBox(
+              height: constraints.maxHeight * 0.85,
+              width: constraints.maxWidth,
+              child: Gauge(
+                description: "Sensor Id ${sensor.id}",
+                unit: sensor.volumetricWaterContent,
+                targetValue: targetValue,
+                constraints: constraints,
+              ),
+            ),
+          );
+          break;
+        case "temperature":
+          num targetValue = 0;
+          widgets.add(
+            SizedBox(
+              height: constraints.maxHeight * 0.85,
+              width: constraints.maxWidth,
+              child: Gauge(
+                description: "Sensor Id ${sensor.id}",
+                unit: sensor.temperature,
+                targetValue: targetValue,
+                constraints: constraints,
+              ),
+            ),
+          );
+          break;
+        case "electricalConductivity":
+          num targetValue = 0;
+          widgets.add(
+            SizedBox(
+              height: constraints.maxHeight * 0.85,
+              width: constraints.maxWidth,
+              child: Gauge(
+                description: "Sensor Id ${sensor.id}",
+                unit: sensor.electricalConductivity,
+                targetValue: targetValue,
+                constraints: constraints,
+              ),
+            ),
+          );
+          break;
+        case "salinity":
+          num targetValue = 0;
+          widgets.add(
+            SizedBox(
+              height: constraints.maxHeight * 0.85,
+              width: constraints.maxWidth,
+              child: Gauge(
+                description: "Sensor Id ${sensor.id}",
+                unit: sensor.salinity,
+                targetValue: targetValue,
+                constraints: constraints,
+              ),
+            ),
+          );
+          break;
+        case "totalDissolvedSolids":
+          num targetValue = 0;
+          widgets.add(
+            SizedBox(
+              height: constraints.maxHeight * 0.85,
+              width: constraints.maxWidth,
+              child: Gauge(
+                description: "Sensor Id ${sensor.id}",
+                unit: sensor.totalDissolvedSolids,
+                targetValue: targetValue,
+                constraints: constraints,
+              ),
+            ),
+          );
+          break;
+      }
+    }
+    return widgets;
   }
 }

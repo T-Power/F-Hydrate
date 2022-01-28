@@ -28,7 +28,7 @@ class _SensorPageState extends State<SensorPage> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    tabs = buildTabs(widget.treeInfo.sensor);
+    tabs = buildTabs(widget.treeInfo.sensors.first);
     controller = TabController(length: tabs.length, vsync: this);
   }
 

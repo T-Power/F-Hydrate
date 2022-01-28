@@ -55,7 +55,7 @@ class DrawerBuilder {
               },
             ),
             ListTile(
-              title: const Text('Sensordaten'),
+              title: const Text('(DEBUG) Sensordaten'),
               leading: const Icon(Icons.speed),
               onTap: () {
                 Navigator.push(

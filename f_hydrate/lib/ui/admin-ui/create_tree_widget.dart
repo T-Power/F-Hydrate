@@ -30,7 +30,6 @@ class CreateTreeWidgetState extends State<CreateTreeWidget> {
   TextEditingController _sunExpositionFactorController =
       new TextEditingController(text: "1.2");
   TextEditingController _passwordController = new TextEditingController(text: "!Tr3es2022.");
-  bool isYoungTree = true;
   DateTime selectedDate = DateTime.now();
 
   @override
@@ -74,6 +73,7 @@ class CreateTreeWidgetState extends State<CreateTreeWidget> {
     createSensor(sensors, _thirdSensorIdController.value.text, "3");
     TreeInformation data = new TreeInformation(
       id: -1,
+      youngTree: false,
       plantedDate: selectedDate,
       position: new GeographicPosition(
           double.parse(_latitudeController.value.text),
@@ -82,7 +82,6 @@ class CreateTreeWidgetState extends State<CreateTreeWidget> {
       soilTypeFactor: double.parse(_soilTypeFactorController.value.text),
       sunExpositionFactor:
           double.parse(_sunExpositionFactorController.value.text),
-      youngTree: isYoungTree,
       sensors: sensors,
     );
     if (!validatePassword()) {
@@ -212,12 +211,6 @@ class CreateTreeWidgetState extends State<CreateTreeWidget> {
           controller: _sunExpositionFactorController,
           textInputType: TextInputType.number,
         ),
-        SwitchListTile(
-            title: Text('Jungbaum?'),
-            value: this.isYoungTree,
-            onChanged: (value) => setState(() {
-                  this.isYoungTree = value;
-                })),
         InputField(
           icon: Icons.lock,
           title: "Passwort",

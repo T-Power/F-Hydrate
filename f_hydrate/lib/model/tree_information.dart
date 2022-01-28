@@ -47,11 +47,9 @@ class TreeInformation {
         locationFactor: json['locationFactor'],
         soilTypeFactor: json['soilTypeFactor'],
         sunExpositionFactor: json['sunExpositionFactor'],
-        sensors: new List.from({
-          json['latestMeasurement'] == null
-              ? Sensor.standardValues()
-              : Sensor.fromJson(json['latestMeasurement'])
-        }, growable: true));
+        sensors: json['latestMeasurements'] == null
+            ? new List.of({Sensor.standardValues()})
+            : Sensor.listFromJson(json['latestMeasurements']));
   }
 
   Map<String, dynamic> toTreeCreationJson() {
@@ -62,7 +60,6 @@ class TreeInformation {
       '"locationFactor"': this.locationFactor,
       '"sunExpositionFactor"': this.sunExpositionFactor,
       '"soilTypeFactor"': this.soilTypeFactor,
-      '"youngTree"': this.youngTree,
       '"sensors"': buildSensorList(),
     };
   }

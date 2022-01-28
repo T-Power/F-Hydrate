@@ -76,9 +76,17 @@ class Sensor {
         tree: BiologicalTreeType());
   }
 
+  static List<Sensor> listFromJson(List<dynamic> json) {
+    List<Map<String, dynamic>> jsonList = json.cast<Map<String, dynamic>>();
+    List<Sensor> sensors = new List.of([], growable: true);
+    for (Map<String, dynamic> map in json) {
+      sensors.add(Sensor.fromJson(map));
+    }
+    return sensors;
+  }
+
   Map<String, dynamic> toTreeCreationSensorJson() {
     Map<String, dynamic> map = new Map();
-    map['"id"'] = this.id;
     map['"mqtt_sensor_id"'] = this.mqtt_sensor_id;
     map['"depth"'] = this.depth;
     return map;

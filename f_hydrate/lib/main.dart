@@ -1,14 +1,23 @@
 import 'package:f_hydrate/ui/cookies_banner.dart';
 import 'package:f_hydrate/ui/drawer.dart';
 import 'package:f_hydrate/ui/forestmap.dart';
-import 'package:f_hydrate/ui/forestmap_replacement.dart';
 import 'package:f_hydrate/ui/theme_manager.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'model/cookie_manager.dart';
 
 void main() {
+  addLicencesToLicenseRegistry();
   runApp(const MyApp());
+}
+
+void addLicencesToLicenseRegistry() {
+  LicenseRegistry.addLicense(() async* {
+    final license = await rootBundle.loadString('google_fonts/OFL.txt');
+    yield LicenseEntryWithLineBreaks(['google_fonts'], license);
+  });
 }
 
 class MyApp extends StatelessWidget {
